@@ -1,0 +1,166 @@
+<root>
+  <!-- XML-Namespace und Standardinformationen -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
+              <xsd:attribute name="xml:space" default="preserve"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+
+  <!-- Ressourcen-Daten -->
+  <data name="WelcomeMessage" xml:space="preserve">
+    <value>Willkommen zur Anwendung!</value>
+    <comment>Begrüßungstext für die Startseite</comment>
+  </data>
+
+  <data name="ExitPrompt" xml:space="preserve">
+    <value>Möchten Sie die Anwendung wirklich beenden?</value>
+  </data>
+
+<data name="new entry" xml:space="preserve">
+	<value></value>
+	<comment></comment>
+</data>
+
+<data name="new entry" xml:space="preserve">
+	<value></value>
+	<comment></comment>
+</data>
+
+<data name="new entry" xml:space="preserve">
+	<value></value>
+	<comment></comment>
+</data>
+
+<data name="new entry" xml:space="preserve">
+	<value></value>
+	<comment></comment>
+</data>
+
+<data name="new entry" xml:space="preserve">
+	<value></value>
+	<comment></comment>
+</data>
+
+<data name="new entry" xml:space="preserve">
+	<value></value>
+	<comment></comment>
+</data>
+
+<data name="new entry" xml:space="preserve">
+	<value></value>
+	<comment></comment>
+</data>
+
+<data name="new entry" xml:space="preserve">
+	<value></value>
+	<comment></comment>
+</data>
+
+<data name="new entry" xml:space="preserve">
+	<value></value>
+	<comment></comment>
+</data>
+
+<data name="new entry" xml:space="preserve">
+	<value></value>
+	<comment></comment>
+</data>
+
+<data name="new entry" xml:space="preserve">
+	<value></value>
+	<comment></comment>
+</data>
+
+<data name="new entry" xml:space="preserve">
+	<value></value>
+	<comment></comment>
+</data>
+
+<data name="new entry" xml:space="preserve">
+	<value></value>
+	<comment></comment>
+</data>
+
+<data name="new entry" xml:space="preserve">
+	<value></value>
+	<comment></comment>
+</data>
+
+<data name="new entry" xml:space="preserve">
+	<value></value>
+	<comment></comment>
+</data>
+
+<data name="new entry" xml:space="preserve">
+	<value></value>
+	<comment></comment>
+</data>
+
+<data name="new entry" xml:space="preserve">
+	<value></value>
+	<comment></comment>
+</data>
+
+<data name="new entry" xml:space="preserve">
+	<value></value>
+	<comment></comment>
+</data>
+
+<data name="new entry" xml:space="preserve">
+	<value></value>
+	<comment></comment>
+</data>
+
+<data name="new entry" xml:space="preserve">
+	<value></value>
+	<comment></comment>
+</data>
+
+<data name="new entry" xml:space="preserve">
+	<value></value>
+	<comment></comment>
+</data>
+
+<data name="new entry" xml:space="preserve">
+	<value></value>
+	<comment></comment>
+</data>
+
+<data name="new entry" xml:space="preserve">
+	<value></value>
+	<comment></comment>
+</data>
+
+<data name="new entry" xml:space="preserve">
+	<value></value>
+	<comment></comment>
+</data>
+
+<data name="new entry" xml:space="preserve">
+	<value></value>
+	<comment></comment>
+</data>
+
+<data name="new entry" xml:space="preserve">
+	<value></value>
+	<comment></comment>
+</data>
+
+<data name="new entry" xml:space="preserve">
+	<value></value>
+	<comment></comment>
+</data>
+</root>

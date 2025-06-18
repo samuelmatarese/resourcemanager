@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "Node16",
+    "target": "ES2022",
+    "outDir": "out",
+    "lib": ["ES2022"],
+    "sourceMap": true,
+    "rootDir": "src",
+    "strict": true,
+    "types": ["vscode", "node", "mocha"],         // 👈 notwendig!
+    "moduleResolution": "Node16",  // 👈 wichtig, um Module wie 'vscode' zu finden
+    "esModuleInterop": true,     // optional, aber oft hilfreich bei interop
+    "skipLibCheck": true         // optional, schnellerer Build
+  }
+}
