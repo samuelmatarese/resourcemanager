@@ -22,10 +22,25 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
   constructor(private readonly context: vscode.ExtensionContext) {}
 
   public async resolveCustomTextEditor(document: vscode.TextDocument, webviewPanel: vscode.WebviewPanel, _token: vscode.CancellationToken): Promise<void> {
+    if (document.getText().trim().length === 0) {
+      const defaultContent = `<?xml version="1.0" encoding="utf-8"?>\n<root>\n</root>`;
+      const edit = new vscode.WorkspaceEdit();
+      edit.insert(document.uri, new vscode.Position(0, 0), defaultContent + "\n");
+      await vscode.workspace.applyEdit(edit);
+      await document.save();
+    } else {
+      const updatedDoc = XmlHelper.addIdsToAlreadyExistingEntries(document);
+      const edit = new vscode.WorkspaceEdit();
+      edit.replace(document.uri, new vscode.Range(document.positionAt(0), document.positionAt(document.getText().length)), updatedDoc);
+      await vscode.workspace.applyEdit(edit);
+      await document.save();
+    }
+    updateWebview();
+
     webviewPanel.webview.options = {
       enableScripts: true,
     };
-    
+
     webviewPanel.webview.html = this.getHtmlForWebview(webviewPanel.webview);
 
     function updateWebview() {
@@ -161,7 +176,7 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
     vscode.workspace.applyEdit(edit);
   }
 
-  private generateFormattedDataXml(name: string = "new entry", value: string = "", comment: string = ""): string {
+  private generateFormattedDataXml(name: string = "new_entry", value: string = "", comment: string = ""): string {
     return `<data id="${crypto.randomUUID()}" name="${name}" xml:space="preserve">\n\t<value>${value}</value>\n\t<comment>${comment}</comment>\n</data>`;
   }
 
@@ -206,7 +221,7 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
                 <div class="table-wrapper">
                   <table id="resource-table" class="resource-table">
                       <tr class="table-header">
-                          <th>Identifier</th>
+                          <th>Name</th>
                           <th>Value</th>
                           <th>Comment</th>
                       </tr>

@@ -142,7 +142,7 @@ import { addInputEvent } from "./events/searchbar/searchbarInputEvent";
 
     if (input) {
       const cursorPosition = input.selectionStart;
-      input.value = args.newValue;
+      input.value = args.newValue.replaceAll(" ", "_");
       input.setSelectionRange(cursorPosition, cursorPosition);
     }
   }

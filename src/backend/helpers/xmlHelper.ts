@@ -4,6 +4,7 @@ import { UpdateEntryEventArgs } from "../../webview/events/entry/updateEntryEven
 import { CellType } from "../../webview/cellType";
 import { AccessabilityType } from "../designer/accessabilityType";
 import { AccessabilityTypeMapper } from "../designer/accessabilityTypeMapper";
+import * as vscode from "vscode";
 
 export class XmlHelper {
   public static findEntryById(id: string, entries: HTMLCollectionOf<HTMLDataElement>): HTMLDataElement {
@@ -23,6 +24,7 @@ export class XmlHelper {
 
     switch (args.cellType) {
       case CellType.Name:
+        args.newValue = args.newValue.replaceAll(" ", "_");
         entry.setAttribute("name", args.newValue);
         break;
 
@@ -75,7 +77,6 @@ export class XmlHelper {
     let text: string[] = ["\n"];
 
     entries.forEach((e) => {
-      const entryValue = e.getElementsByTagName("value")[0].textContent;
       const entryComment = e.getElementsByTagName("comment")[0].textContent;
       const name = e.getAttribute("name");
 
@@ -90,6 +91,22 @@ export class XmlHelper {
     text.push("}");
 
     return text.join("\n");
+  }
+
+  public static addIdsToAlreadyExistingEntries(document: TextDocument): string {
+    const xmlDoc = this.getDocumentAsXml(document);
+    let entries = Array.from(xmlDoc.getElementsByTagName("data"));
+
+    entries.forEach((e) => {
+      const id = e.getAttribute("id");
+
+      if (id == null || id == "") {
+        e.setAttribute("id", crypto.randomUUID());
+      }
+    });
+
+    const serializer = new XMLSerializer();
+    return serializer.serializeToString(xmlDoc);
   }
 
   private static getDocumentAsXml(document: TextDocument): XMLDocument {
