@@ -1,6 +1,6 @@
-import { UpdateEntryEventArgs } from "../updateEntryEventArgs";
-import { CellType } from "../cellType";
-import { vscode } from "../constants/constants";
+import { UpdateEntryEventArgs } from "./updateEntryEventArgs";
+import { CellType } from "../../cellType";
+import { vscode } from "../../constants/constants";
 
 export const changeEventHandlers = new Map<HTMLInputElement, EventListener>();
 

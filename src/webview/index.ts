@@ -1,19 +1,23 @@
 import { CellType } from "./cellType";
-import { UpdateEntryEventArgs } from "./updateEntryEventArgs";
+import { UpdateEntryEventArgs } from "./events/entry/updateEntryEventArgs";
 import { vscode } from "./constants/constants";
-import {
-  addChangeEvent,
-  removeChangeEvent,
-} from "./events/entryCellChangeEvent";
+import { Routes } from "./constants/vscodeRoutes";
+import { addChangeEvent, removeChangeEvent } from "./events/entry/entryCellChangeEvent";
+import { addInputEvent } from "./events/searchbar/searchbarInputEvent";
 
 // @ts-check
 // Script run within the webview itself.
 (function () {
   const resourceTable = document.getElementById("resource-table");
   const addButton = document.getElementsByClassName("create-button")[0];
+  const searchbar = document.getElementsByClassName("searchbar")[0] as HTMLInputElement;
 
   if (addButton == null) {
     throw new Error("addbutton is null");
+  }
+
+  if (searchbar == null) {
+    throw new Error("searchbar is null");
   }
 
   addButton.addEventListener("click", () => {
@@ -21,6 +25,8 @@ import {
       type: "add",
     });
   });
+
+  addInputEvent(searchbar);
 
   const errorContainer = document.createElement("div");
   document.body.appendChild(errorContainer);
@@ -43,12 +49,12 @@ import {
       const rowElement = document.createElement("tr");
 
       if (id == null) {
-        vscode.window.showWarningMessage(
-          `File is broken. Name in entry not defined.`
-        );
+        vscode.window.showWarningMessage(`File is broken. Name in entry not defined.`);
         throw new Error(`File is broken. Name in entry not defined.`);
       }
 
+      rowElement.id = id;
+      rowElement.className = "table-row";
       rowElement.appendChild(createEditableCell(id, name, CellType.Name));
       rowElement.appendChild(createEditableCell(id, value, CellType.Value));
       rowElement.appendChild(createEditableCell(id, comment, CellType.Comment));
@@ -76,11 +82,7 @@ import {
     return button;
   }
 
-  function createEditableCell(
-    id: string,
-    textContent: string,
-    cellType: CellType
-  ) {
+  function createEditableCell(id: string, textContent: string, cellType: CellType) {
     const cell = document.createElement("td");
     const input = document.createElement("input");
 
@@ -126,6 +128,10 @@ import {
       case "updateSingle":
         updateSingleEntry(message.eventArgs);
         return;
+
+      case Routes.SearchRoute:
+        filterEntries(message.ids);
+        return;
     }
   });
 
@@ -140,18 +146,18 @@ import {
     }
   }
 
-  function updateIdInChildsAndEvents(id: string) {
-    const selector = `input[data-entry-id="${id}"]`;
+  function filterEntries(ids: string[]) {
+    let entries = Array.from(document.getElementsByClassName("table-row"));
+    console.log(entries.length);
 
-    let elements = Array.from(
-      document.querySelectorAll<HTMLInputElement>(selector)
-    );
+    entries.forEach((entry) => {
+      if (!(entry instanceof HTMLElement)) return;
 
-    elements.forEach((e) => {
-      removeChangeEvent(e);
-      const type = CellType[e.dataset.cellType as keyof typeof CellType];
-      e.dataset.id = id;
-      addChangeEvent(e, type, id);
+      if (!ids.includes(entry.id)) {
+        entry.style.display = "none";
+      } else {
+        entry.style.display = "table-row";
+      }
     });
   }
 

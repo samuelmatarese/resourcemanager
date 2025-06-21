@@ -32,11 +32,6 @@
   overflow-y: visible;
 }
 
-.table-row td {
-  width: 33.33%;
-  padding: 5px;
-}
-
 .table-header th,
 .table-header {
   width: 33.33%;

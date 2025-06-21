@@ -60,13 +60,23 @@
   </resheader>
 
 
-<data id="2971c416-d8d4-4c36-9e70-04a799ec8067" name="MainButton_Click" xml:space="preserve">
-	<value>Hinzufügen</value>
-	<comment>Add new Entry</comment>
-</data>
+
 <data id="91ae487a-04f6-464d-9721-52494d2c2ed2" name="MainButton_Delete" xml:space="preserve">
 	<value>Löschen</value>
 	<comment>Wird zum löschen benötigt</comment>
 </data>
 
+<data id="25e788a3-9e8a-457c-8bc0-a365c08b00b4" name="MainButton_Remove" xml:space="preserve">
+	<value>Entfernen</value>
+	<comment>Entferne entries</comment>
+</data>
+
+<data id="f60ca723-8c74-47b8-bb66-50173052d681" name="SecondaryButton_Add" xml:space="preserve">
+	<value>Hinzufügen</value>
+	<comment>Sekundäres hinzufügen</comment>
+</data>
+<data id="45bc637d-1fb4-46a3-85bd-7238fd412bd0" name="Neuer Eintrag" xml:space="preserve">
+	<value>Ein neuer Eintrag</value>
+	<comment/>
+</data>
 </root>

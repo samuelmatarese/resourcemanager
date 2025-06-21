@@ -1,9 +1,10 @@
 import * as vscode from "vscode";
 import { getNonce } from "./util";
-import { XMLSerializer, DOMParser } from "xmldom";
-import { UpdateEntryEventArgs } from "./webview/updateEntryEventArgs";
-import { CellType } from "./webview/cellType";
+import { UpdateEntryEventArgs } from "../webview/events/entry/updateEntryEventArgs";
 import { UpdateType } from "./updateType";
+import { XmlHelper } from "./helpers/xmlHelper";
+import { Routes } from "../webview/constants/vscodeRoutes";
+import { SearchbarInputEventArgs } from "../webview/events/searchbar/searchbarInputEventArgs";
 
 export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
   private _updateWebViewType = UpdateType.None;
@@ -11,10 +12,7 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
 
   public static register(context: vscode.ExtensionContext): vscode.Disposable {
     const provider = new ResourceEditorProvider(context);
-    const providerRegistration = vscode.window.registerCustomEditorProvider(
-      ResourceEditorProvider.viewType,
-      provider
-    );
+    const providerRegistration = vscode.window.registerCustomEditorProvider(ResourceEditorProvider.viewType, provider);
     return providerRegistration;
   }
 
@@ -22,11 +20,7 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
 
   constructor(private readonly context: vscode.ExtensionContext) {}
 
-  public async resolveCustomTextEditor(
-    document: vscode.TextDocument,
-    webviewPanel: vscode.WebviewPanel,
-    _token: vscode.CancellationToken
-  ): Promise<void> {
+  public async resolveCustomTextEditor(document: vscode.TextDocument, webviewPanel: vscode.WebviewPanel, _token: vscode.CancellationToken): Promise<void> {
     // Setup initial content for the webview
     webviewPanel.webview.options = {
       enableScripts: true,
@@ -35,14 +29,14 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
 
     function updateWebview() {
       webviewPanel.webview.postMessage({
-        type: "update",
+        type: Routes.UpdateAllRoute,
         text: document.getText(),
       });
     }
 
     function singleUpdateWebview(args: UpdateEntryEventArgs) {
       webviewPanel.webview.postMessage({
-        type: "updateSingle",
+        type: Routes.UpdateSingleEntryRoute,
         eventArgs: {
           id: args.id,
           newValue: args.newValue,
@@ -51,25 +45,23 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
       });
     }
 
-    const changeDocumentSubscription = vscode.workspace.onDidChangeTextDocument(
-      (e) => {
-        if (
-          e.document.uri.toString() === document.uri.toString() &&
-          this._updateWebViewType == UpdateType.Full
-        ) {
-          updateWebview();
-        } else if (
-          e.document.uri.toString() === document.uri.toString() &&
-          this._updateWebViewType == UpdateType.Single &&
-          this._updateEntryEventArgs != undefined
-        ) {
-          singleUpdateWebview(this._updateEntryEventArgs);
-          this._updateEntryEventArgs = undefined;
-        }
+    function filterEntries(ids: string[]) {
+      webviewPanel.webview.postMessage({
+        type: Routes.SearchRoute,
+        ids: ids
+      });
+    }
 
-        this._updateWebViewType = UpdateType.None;
+    const changeDocumentSubscription = vscode.workspace.onDidChangeTextDocument((e) => {
+      if (e.document.uri.toString() === document.uri.toString() && this._updateWebViewType == UpdateType.Full) {
+        updateWebview();
+      } else if (e.document.uri.toString() === document.uri.toString() && this._updateWebViewType == UpdateType.Single && this._updateEntryEventArgs != undefined) {
+        singleUpdateWebview(this._updateEntryEventArgs);
+        this._updateEntryEventArgs = undefined;
       }
-    );
+
+      this._updateWebViewType = UpdateType.None;
+    });
 
     webviewPanel.onDidDispose(() => {
       changeDocumentSubscription.dispose();
@@ -92,6 +84,11 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
           this._updateWebViewType = UpdateType.Full;
           this.deleteEntry(document, e.id);
           return;
+
+        case Routes.SearchRoute:
+          const ids = this.searchEntries(document, e.eventArgs);
+          filterEntries(ids);
+          return;
       }
     });
   }
@@ -104,9 +101,8 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
     return this.removeEntry(document, id);
   }
 
-  private getDocumentAsXml(document: vscode.TextDocument): XMLDocument {
-    var parser = new DOMParser();
-    return parser.parseFromString(document.getText());
+  private searchEntries(document: vscode.TextDocument, args: SearchbarInputEventArgs): string[] {
+    return XmlHelper.filterEntriesBySearchText(document, args.searchText);
   }
 
   private insertDefaultResource(document: vscode.TextDocument) {
@@ -120,11 +116,7 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
       return;
     }
 
-    edit.insert(
-      document.uri,
-      document.positionAt(insertOffset),
-      this.generateFormattedDataXml() + "\n"
-    );
+    edit.insert(document.uri, document.positionAt(insertOffset), this.generateFormattedDataXml() + "\n");
 
     return vscode.workspace.applyEdit(edit);
   }
@@ -133,10 +125,7 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
     const edit = new vscode.WorkspaceEdit();
     const text = document.getText();
 
-    const regex = new RegExp(
-      `<data[^>]*id="${id}"[^>]*>[\\s\\S]*?<\\/data>`,
-      "g"
-    );
+    const regex = new RegExp(`<data[^>]*id="${id}"[^>]*>[\\s\\S]*?<\\/data>`, "g");
     const match = regex.exec(text);
 
     if (match && match.index !== undefined) {
@@ -154,92 +143,29 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
 
   private editEntry(document: vscode.TextDocument, args: UpdateEntryEventArgs) {
     const edit = new vscode.WorkspaceEdit();
-    const xmlDoc = this.getDocumentAsXml(document);
+    let newText = "";
 
-    let entries = xmlDoc.getElementsByTagName("data");
-    let entry = this.findEntryByName(args.id, entries);
+    [newText, this._updateEntryEventArgs] = XmlHelper.EditSingleEntry(document, args);
 
-    switch (args.cellType) {
-      case CellType.Name:
-        entry.setAttribute("name", args.newValue);
-        break;
-
-      case CellType.Value:
-        let entryValue = entry.getElementsByTagName("value")[0];
-        entryValue.textContent = args.newValue;
-        break;
-
-      case CellType.Comment:
-        let entryComment = entry.getElementsByTagName("comment")[0];
-        entryComment.textContent = args.newValue;
-        break;
-    }
-
-    this._updateEntryEventArgs = {
-      cellType: args.cellType,
-      id: args.id,
-      newValue: args.newValue
-    }
-
-    const serializer = new XMLSerializer();
-    const newText = serializer.serializeToString(xmlDoc);
-
-    const fullRange = new vscode.Range(
-      document.positionAt(0),
-      document.positionAt(document.getText().length)
-    );
+    const fullRange = new vscode.Range(document.positionAt(0), document.positionAt(document.getText().length));
 
     edit.replace(document.uri, fullRange, newText);
     vscode.workspace.applyEdit(edit);
   }
 
-  private generateFormattedDataXml(
-    name: string = "new entry",
-    value: string = "",
-    comment: string = ""
-  ): string {
+  private generateFormattedDataXml(name: string = "new entry", value: string = "", comment: string = ""): string {
     return `<data id="${crypto.randomUUID()}" name="${name}" xml:space="preserve">\n\t<value>${value}</value>\n\t<comment>${comment}</comment>\n</data>`;
-  }
-
-  private findEntryByName(
-    id: string,
-    entries: HTMLCollectionOf<HTMLDataElement>
-  ): HTMLDataElement {
-    for (let i = 0; i < entries.length; i++) {
-      if (entries[i].getAttribute("id") == id) {
-        return entries[i];
-      }
-    }
-
-    throw new Error("No entry found with id: " + id);
   }
 
   private getHtmlForWebview(webview: vscode.Webview): string {
     // Local path to script and css for the webview
-    const scriptUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(
-        this.context.extensionUri,
-        "out",
-        "webview",
-        "webview.js"
-      )
-    );
+    const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, "out", "webview", "webview.js"));
 
-    const styleResetUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this.context.extensionUri, "media", "reset.css")
-    );
+    const styleResetUri = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, "media", "reset.css"));
 
-    const styleVSCodeUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this.context.extensionUri, "media", "vscode.css")
-    );
+    const styleVSCodeUri = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, "media", "vscode.css"));
 
-    const styleMainUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(
-        this.context.extensionUri,
-        "media",
-        "resourceEditor.css"
-      )
-    );
+    const styleMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, "media", "resourceEditor.css"));
 
     // Use a nonce to whitelist which scripts can be run
     const nonce = getNonce();
