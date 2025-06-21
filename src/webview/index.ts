@@ -84,14 +84,15 @@ import { addInputEvent } from "./events/searchbar/searchbarInputEvent";
 
   function createEditableCell(id: string, textContent: string, cellType: CellType) {
     const cell = document.createElement("td");
-    const input = document.createElement("input");
+    const textarea = document.createElement("textarea");
 
-    input.value = textContent;
-    input.dataset.entryId = id;
-    input.dataset.cellType = cellType.toString();
-    addChangeEvent(input, cellType, id);
+    textarea.value = textContent;
+    textarea.rows = 1;
+    textarea.dataset.entryId = id;
+    textarea.dataset.cellType = cellType.toString();
+    addChangeEvent(textarea, cellType, id);
 
-    cell.appendChild(input);
+    cell.appendChild(textarea);
     return cell;
   }
 
@@ -161,8 +162,6 @@ import { addInputEvent } from "./events/searchbar/searchbarInputEvent";
     });
   }
 
-  // Webviews are normally torn down when not visible and re-created when they become visible again.
-  // State lets us save information across these re-loads
   const state = vscode.getState();
   if (state) {
     updateContent(state.text);

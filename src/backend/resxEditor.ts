@@ -5,6 +5,7 @@ import { UpdateType } from "./updateType";
 import { XmlHelper } from "./helpers/xmlHelper";
 import { Routes } from "../webview/constants/vscodeRoutes";
 import { SearchbarInputEventArgs } from "../webview/events/searchbar/searchbarInputEventArgs";
+import { DesignerHelper } from "./helpers/designerHelper";
 
 export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
   private _updateWebViewType = UpdateType.None;
@@ -21,10 +22,10 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
   constructor(private readonly context: vscode.ExtensionContext) {}
 
   public async resolveCustomTextEditor(document: vscode.TextDocument, webviewPanel: vscode.WebviewPanel, _token: vscode.CancellationToken): Promise<void> {
-    // Setup initial content for the webview
     webviewPanel.webview.options = {
       enableScripts: true,
     };
+    
     webviewPanel.webview.html = this.getHtmlForWebview(webviewPanel.webview);
 
     function updateWebview() {
@@ -48,9 +49,15 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
     function filterEntries(ids: string[]) {
       webviewPanel.webview.postMessage({
         type: Routes.SearchRoute,
-        ids: ids
+        ids: ids,
       });
     }
+
+    const saveSubscription = vscode.workspace.onWillSaveTextDocument((e) => {
+      if (e.document.uri.toString() === document.uri.toString()) {
+        DesignerHelper.GenerateDesignerFile(document);
+      }
+    });
 
     const changeDocumentSubscription = vscode.workspace.onDidChangeTextDocument((e) => {
       if (e.document.uri.toString() === document.uri.toString() && this._updateWebViewType == UpdateType.Full) {
@@ -65,6 +72,7 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
 
     webviewPanel.onDidDispose(() => {
       changeDocumentSubscription.dispose();
+      saveSubscription.dispose();
     });
 
     webviewPanel.webview.onDidReceiveMessage((e) => {
@@ -145,7 +153,7 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
     const edit = new vscode.WorkspaceEdit();
     let newText = "";
 
-    [newText, this._updateEntryEventArgs] = XmlHelper.EditSingleEntry(document, args);
+    [newText, this._updateEntryEventArgs] = XmlHelper.editSingleEntry(document, args);
 
     const fullRange = new vscode.Range(document.positionAt(0), document.positionAt(document.getText().length));
 

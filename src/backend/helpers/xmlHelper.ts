@@ -2,6 +2,8 @@ import { XMLSerializer, DOMParser } from "xmldom";
 import type { TextDocument } from "vscode";
 import { UpdateEntryEventArgs } from "../../webview/events/entry/updateEntryEventArgs";
 import { CellType } from "../../webview/cellType";
+import { AccessabilityType } from "../designer/accessabilityType";
+import { AccessabilityTypeMapper } from "../designer/accessabilityTypeMapper";
 
 export class XmlHelper {
   public static findEntryById(id: string, entries: HTMLCollectionOf<HTMLDataElement>): HTMLDataElement {
@@ -14,7 +16,7 @@ export class XmlHelper {
     throw new Error("No entry found with id: " + id);
   }
 
-  public static EditSingleEntry(document: TextDocument, args: UpdateEntryEventArgs): [string, UpdateEntryEventArgs] {
+  public static editSingleEntry(document: TextDocument, args: UpdateEntryEventArgs): [string, UpdateEntryEventArgs] {
     const xmlDoc = this.getDocumentAsXml(document);
     let entries = xmlDoc.getElementsByTagName("data");
     let entry = XmlHelper.findEntryById(args.id, entries);
@@ -65,6 +67,29 @@ export class XmlHelper {
     });
 
     return ids;
+  }
+
+  public static getDesignerText(document: TextDocument, accessabilityType: AccessabilityType) {
+    const xmlDoc = this.getDocumentAsXml(document);
+    let entries = Array.from(xmlDoc.getElementsByTagName("data"));
+    let text: string[] = ["\n"];
+
+    entries.forEach((e) => {
+      const entryValue = e.getElementsByTagName("value")[0].textContent;
+      const entryComment = e.getElementsByTagName("comment")[0].textContent;
+      const name = e.getAttribute("name");
+
+      text.push(`\t\t/// <summary>`);
+      text.push(`\t\t/// ${entryComment}`);
+      text.push(`\t\t/// </summary>`);
+      text.push(`\t\t${AccessabilityTypeMapper.MapToText(accessabilityType)} static string ${name} => ResourceManager.GetString("${name}", resourceCulture);`);
+      text.push("");
+    });
+
+    text.push("\t}");
+    text.push("}");
+
+    return text.join("\n");
   }
 
   private static getDocumentAsXml(document: TextDocument): XMLDocument {

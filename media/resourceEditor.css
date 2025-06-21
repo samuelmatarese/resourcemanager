@@ -51,6 +51,10 @@
   width: 100vw;
 }
 
+.table-row textarea {
+  resize: none;
+}
+
 .delete-button {
   padding-left: 5px;
   padding-right: 5px;
