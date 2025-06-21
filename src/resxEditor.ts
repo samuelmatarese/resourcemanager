@@ -1,20 +1,14 @@
 import * as vscode from "vscode";
 import { getNonce } from "./util";
 import { XMLSerializer, DOMParser } from "xmldom";
+import { UpdateEntryEventArgs } from "./webview/updateEntryEventArgs";
+import { CellType } from "./webview/cellType";
+import { UpdateType } from "./updateType";
 
-/**
- * Provider for cat scratch editors.
- *
- * Cat scratch editors are used for `.cscratch` files, which are just json files.
- * To get started, run this extension and open an empty `.cscratch` file in VS Code.
- *
- * This provider demonstrates:
- *
- * - Setting up the initial webview for a custom editor.
- * - Loading scripts and styles in a custom editor.
- * - Synchronizing changes between a text document and a custom editor.
- */
 export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
+  private _updateWebViewType = UpdateType.None;
+  private _updateEntryEventArgs: UpdateEntryEventArgs | undefined = undefined;
+
   public static register(context: vscode.ExtensionContext): vscode.Disposable {
     const provider = new ResourceEditorProvider(context);
     const providerRegistration = vscode.window.registerCustomEditorProvider(
@@ -28,11 +22,6 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
 
   constructor(private readonly context: vscode.ExtensionContext) {}
 
-  /**
-   * Called when our custom editor is opened.
-   *
-   *
-   */
   public async resolveCustomTextEditor(
     document: vscode.TextDocument,
     webviewPanel: vscode.WebviewPanel,
@@ -51,80 +40,73 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
       });
     }
 
-    // Hook up event handlers so that we can synchronize the webview with the text document.
-    //
-    // The text document acts as our model, so we have to sync change in the document to our
-    // editor and sync changes in the editor back to the document.
-    //
-    // Remember that a single text document can also be shared between multiple custom
-    // editors (this happens for example when you split a custom editor)
+    function singleUpdateWebview(args: UpdateEntryEventArgs) {
+      webviewPanel.webview.postMessage({
+        type: "updateSingle",
+        eventArgs: {
+          id: args.id,
+          newValue: args.newValue,
+          cellType: args.cellType,
+        },
+      });
+    }
 
     const changeDocumentSubscription = vscode.workspace.onDidChangeTextDocument(
       (e) => {
-        if (e.document.uri.toString() === document.uri.toString()) {
+        if (
+          e.document.uri.toString() === document.uri.toString() &&
+          this._updateWebViewType == UpdateType.Full
+        ) {
           updateWebview();
+        } else if (
+          e.document.uri.toString() === document.uri.toString() &&
+          this._updateWebViewType == UpdateType.Single &&
+          this._updateEntryEventArgs != undefined
+        ) {
+          singleUpdateWebview(this._updateEntryEventArgs);
+          this._updateEntryEventArgs = undefined;
         }
+
+        this._updateWebViewType = UpdateType.None;
       }
     );
 
-    // Make sure we get rid of the listener when our editor is closed.
     webviewPanel.onDidDispose(() => {
       changeDocumentSubscription.dispose();
     });
 
-    // Receive message from the webview.
     webviewPanel.webview.onDidReceiveMessage((e) => {
       switch (e.type) {
         case "add":
-          this.addNewScratch(document);
+          this._updateWebViewType = UpdateType.Full;
+          this.addEntry(document);
+          return;
+
+        case "editEntry":
+          this._updateWebViewType = UpdateType.Single;
+          this.editEntry(document, e.eventArgs);
+          singleUpdateWebview(e.eventArgs);
           return;
 
         case "delete":
-          this.deleteScratch(document, e.id);
+          this._updateWebViewType = UpdateType.Full;
+          this.deleteEntry(document, e.id);
           return;
       }
     });
-
-    updateWebview();
   }
 
-  /**
-   * Add a new scratch to the current document.
-   */
-  private addNewScratch(document: vscode.TextDocument) {
+  private addEntry(document: vscode.TextDocument) {
     return this.insertDefaultResource(document);
   }
 
-  /**
-   * Delete an existing scratch from a document.
-   */
-  private deleteScratch(document: vscode.TextDocument, id: string) {
-    const json = this.getDocumentAsJson(document);
-    if (!Array.isArray(json.scratches)) {
-      return;
-    }
-
-    json.scratches = json.scratches.filter((note: any) => note.id !== id);
-
-    return this.updateTextDocument(document, json);
+  private deleteEntry(document: vscode.TextDocument, id: string) {
+    return this.removeEntry(document, id);
   }
 
-  /**
-   * Try to get a current document as json text.
-   */
-  private getDocumentAsJson(document: vscode.TextDocument): any {
-    const text = document.getText();
-    if (text.trim().length === 0) {
-      return {};
-    }
-
-    try {
-      return JSON.parse(text);
-    } catch {
-      throw new Error(
-        "Could not get document as json. Content is not valid json"
-      );
-    }
+  private getDocumentAsXml(document: vscode.TextDocument): XMLDocument {
+    var parser = new DOMParser();
+    return parser.parseFromString(document.getText());
   }
 
   private insertDefaultResource(document: vscode.TextDocument) {
@@ -134,30 +116,81 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
     const insertOffset = xmlText.lastIndexOf(rootCloseTag);
 
     if (insertOffset === -1) {
-      vscode.window.showErrorMessage("Kein </root>-Tag gefunden.");
+      vscode.window.showErrorMessage("No  </root>-Tag found.");
       return;
     }
 
     edit.insert(
       document.uri,
       document.positionAt(insertOffset),
-      "\n" + this.generateFormattedDataXml() + "\n"
+      this.generateFormattedDataXml() + "\n"
     );
 
     return vscode.workspace.applyEdit(edit);
   }
 
-  private updateTextDocument(document: vscode.TextDocument, newElement: Node) {
+  private removeEntry(document: vscode.TextDocument, id: string) {
     const edit = new vscode.WorkspaceEdit();
-    const serializer = new XMLSerializer();
-    const newXmlElement = serializer.serializeToString(newElement);
-    const prettyXml = `  ${newXmlElement.replace(/></g, ">\n  <")}\n`;
-    const lastLine = document.lineCount - 1;
-    const lastChar = document.lineAt(lastLine).range.end.character;
-    const insertPosition = new vscode.Position(lastLine, lastChar);
+    const text = document.getText();
 
-    edit.insert(document.uri, insertPosition, "\n" + prettyXml + "\n");
-    return vscode.workspace.applyEdit(edit);
+    const regex = new RegExp(
+      `<data[^>]*id="${id}"[^>]*>[\\s\\S]*?<\\/data>`,
+      "g"
+    );
+    const match = regex.exec(text);
+
+    if (match && match.index !== undefined) {
+      const startPos = document.positionAt(match.index);
+      const endPos = document.positionAt(match.index + match[0].length);
+      const range = new vscode.Range(startPos, endPos);
+
+      edit.delete(document.uri, range);
+      return vscode.workspace.applyEdit(edit);
+    } else {
+      vscode.window.showWarningMessage(`No entry with id="${id}" found.`);
+      return;
+    }
+  }
+
+  private editEntry(document: vscode.TextDocument, args: UpdateEntryEventArgs) {
+    const edit = new vscode.WorkspaceEdit();
+    const xmlDoc = this.getDocumentAsXml(document);
+
+    let entries = xmlDoc.getElementsByTagName("data");
+    let entry = this.findEntryByName(args.id, entries);
+
+    switch (args.cellType) {
+      case CellType.Name:
+        entry.setAttribute("name", args.newValue);
+        break;
+
+      case CellType.Value:
+        let entryValue = entry.getElementsByTagName("value")[0];
+        entryValue.textContent = args.newValue;
+        break;
+
+      case CellType.Comment:
+        let entryComment = entry.getElementsByTagName("comment")[0];
+        entryComment.textContent = args.newValue;
+        break;
+    }
+
+    this._updateEntryEventArgs = {
+      cellType: args.cellType,
+      id: args.id,
+      newValue: args.newValue
+    }
+
+    const serializer = new XMLSerializer();
+    const newText = serializer.serializeToString(xmlDoc);
+
+    const fullRange = new vscode.Range(
+      document.positionAt(0),
+      document.positionAt(document.getText().length)
+    );
+
+    edit.replace(document.uri, fullRange, newText);
+    vscode.workspace.applyEdit(edit);
   }
 
   private generateFormattedDataXml(
@@ -165,19 +198,30 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
     value: string = "",
     comment: string = ""
   ): string {
-    return `<data name="${name}" xml:space="preserve">\n\t<value>${value}</value>\n\t<comment>${comment}</comment>\n</data>`;
+    return `<data id="${crypto.randomUUID()}" name="${name}" xml:space="preserve">\n\t<value>${value}</value>\n\t<comment>${comment}</comment>\n</data>`;
   }
 
-  /**
-   * Get the static html used for the editor webviews.
-   */
+  private findEntryByName(
+    id: string,
+    entries: HTMLCollectionOf<HTMLDataElement>
+  ): HTMLDataElement {
+    for (let i = 0; i < entries.length; i++) {
+      if (entries[i].getAttribute("id") == id) {
+        return entries[i];
+      }
+    }
+
+    throw new Error("No entry found with id: " + id);
+  }
+
   private getHtmlForWebview(webview: vscode.Webview): string {
     // Local path to script and css for the webview
     const scriptUri = webview.asWebviewUri(
       vscode.Uri.joinPath(
         this.context.extensionUri,
-        "media",
-        "resourceScript.js"
+        "out",
+        "webview",
+        "webview.js"
       )
     );
 
