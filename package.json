@@ -1,7 +1,11 @@
 {
   "name": "resourcemanager",
-  "publisher": "Samuel Matarese",
+  "publisher": "SamuelMatarese",
   "displayName": "ResourceManager",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/samuelmatarese/resourcemanager.git"
+  },
   "description": "Manage Resx files easily with this extension",
   "version": "0.0.1",
   "engines": {
