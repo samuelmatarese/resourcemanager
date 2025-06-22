@@ -37,6 +37,10 @@ There is currently no logic to prevent you from using duplicate names for your r
 
 ## Release Notes
 
+### 0.0.3
+
+Add Icon for extension.
+
 ### 0.0.2
 
 Fixes a bug where the editor would not start when opening the extension.
