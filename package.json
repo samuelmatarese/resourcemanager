@@ -1,7 +1,7 @@
 {
-  "name": "resourcemanager",
+  "name": "resxmanager",
   "publisher": "SamuelMatarese",
-  "displayName": "ResourceManager",
+  "displayName": "RESX Manager",
   "repository": {
     "type": "git",
     "url": "https://github.com/samuelmatarese/resourcemanager.git"
@@ -22,7 +22,7 @@
     "customEditors": [
       {
         "viewType": "resource.resx",
-        "displayName": "Resource Manager",
+        "displayName": "RESX Manager",
         "selector": [
           {
             "filenamePattern": "*.resx"
