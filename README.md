@@ -1,71 +1,37 @@
-# rescourcemanager README
+# Resource Manager
 
-This is the README for your extension "rescourcemanager". After writing up a brief description, we recommend including the following sections.
+This resource manager was created as a personal learning project to explore how to build VS Code extensions. Please note that this extension is still under development, and there is no guarantee that it will work correctly with your .resx files.
 
-## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+## Current Features
 
-For example if there is an image subfolder under your extension project workspace:
+**Manage Your Resource Entries**
 
-\!\[feature X\]\(images/feature-x.png\)
+You can easily create new entries using the button in the toolbar. Entry names and values can be edited directly in the table. Additionally, you can add comments to describe each resource, if needed.
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
 
-## Requirements
+**Generate a Designer File**
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+Whenever you save your changes, a .Designer.cs file is automatically generated in the same directory as your .resx file. This file makes it easier to access your resources in .NET projects.
 
-## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+**Search Your Resources**
 
-For example:
+The toolbar also includes a search bar, allowing you to quickly find specific entries. This is especially useful when working with large .resx files containing many resources.
 
-This extension contributes the following settings:
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+## Roadmap
+
+
+
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+There is currently no logic to prevent you from using duplicate names for your resources.
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
 
-### 1.0.0
+### 0.0.1
 
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+Initial beta Release
