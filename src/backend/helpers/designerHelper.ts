@@ -2,16 +2,17 @@ import type { TextDocument } from "vscode";
 import * as fs from "fs";
 import * as path from "path";
 import { XmlHelper } from "./xmlHelper";
-import { AccessabilityType } from "../designer/accessabilityType";
+import { AccessabilityType } from "../../webview/events/accessability/accessabilityType";
 import * as vscode from "vscode";
 import { AccessabilityTypeMapper } from "../designer/accessabilityTypeMapper";
 
 export class DesignerHelper {
   public static GenerateDesignerFile(document: TextDocument) {
+    const accessability = XmlHelper.checkAccessability(document);
     let name = document.fileName;
     name = name.substring(0, name.lastIndexOf(".")) + ".Designer.cs";
-    let fileContent = this.GenerateDefaultText(this.deriveNamespace(document), path.basename(document.fileName, path.extname(document.fileName)), AccessabilityType.Internal);
-    fileContent = fileContent + XmlHelper.getDesignerText(document, AccessabilityType.Internal);
+    let fileContent = this.GenerateDefaultText(this.deriveNamespace(document), path.basename(document.fileName, path.extname(document.fileName)), accessability ?? AccessabilityType.Internal);
+    fileContent = fileContent + XmlHelper.getDesignerText(document, accessability ?? AccessabilityType.Internal);
     fs.writeFile(name, fileContent, () => {});
   }
 

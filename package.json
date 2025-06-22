@@ -1,5 +1,6 @@
 {
   "name": "resourcemanager",
+  "publisher": "Samuel Matarese",
   "displayName": "ResourceManager",
   "description": "Manage Resx files easily with this extension",
   "version": "0.0.1",
@@ -23,13 +24,6 @@
             "filenamePattern": "*.resx"
           }
         ]
-      }
-    ],
-    "commands": [
-      {
-        "command": "catCustoms.pawDraw.new",
-        "title": "Create new Paw Draw Document",
-        "category": "Paw Draw"
       }
     ]
   },
@@ -56,6 +50,7 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
+    "@vscode/vsce": "^3.5.0",
     "xmldom": "^0.6.0"
   }
 }

@@ -1,0 +1,159 @@
+<root><accessability>public</accessability>
+<data name="Login_Title" xml:space="preserve" id="7cb59222-f318-4ff3-96a8-fcd014bcd48a">
+  <value>Login to your account</value>
+  <comment>Title of the login form</comment>
+</data>
+<data name="Login_Username" xml:space="preserve" id="51a3507c-7146-4055-9ba9-f3734ba6cb02">
+  <value>Username</value>
+  <comment>Label for username input</comment>
+</data>
+<data name="Login_Password" xml:space="preserve" id="9e538b7b-d13e-4718-af04-919c831b6dae">
+  <value>Password</value>
+  <comment>Label for password input</comment>
+</data>
+<data name="Login_Button" xml:space="preserve" id="2ce4c5c4-ba8e-4ae3-9147-81b7671ec3c1">
+  <value>Sign In</value>
+  <comment>Text on login button</comment>
+</data>
+<data name="Login_Error" xml:space="preserve" id="dc1d68db-8ce8-4ae3-ad10-0d3e82fcb9e1">
+  <value>Invalid username or password</value>
+  <comment>Login error message</comment>
+</data>
+<data name="Login_ForgotPassword" xml:space="preserve" id="ef2d1ec4-bffe-4442-95e2-c5e8c2043503">
+  <value>Forgot your password?</value>
+  <comment>Link to reset password</comment>
+</data>
+<data name="Register_Title" xml:space="preserve" id="6c83f108-e0c3-4952-84e0-445f99ae8c4f">
+  <value>Create a new account</value>
+  <comment>Registration form title</comment>
+</data>
+<data name="Register_Email" xml:space="preserve" id="2b80b7c1-ff92-4a60-9fd1-b9e7ebc55c3a">
+  <value>Email</value>
+</data>
+<data name="Register_ConfirmPassword" xml:space="preserve" id="f62ce915-b174-468d-a52b-b9e7504ab691">
+  <value>Confirm Password</value>
+</data>
+<data name="Register_Button" xml:space="preserve" id="598880d2-6caa-43c3-ba38-0eba9a6d55fa">
+  <value>Sign Up</value>
+</data>
+<data name="Navbar_Home" xml:space="preserve" id="36548c3f-3565-46cf-9930-c550fd2aac7b">
+  <value>Home</value>
+</data>
+<data name="Navbar_Profile" xml:space="preserve" id="9f8dd740-6baf-47cd-a52c-be1b677eedc0">
+  <value>Profile</value>
+</data>
+<data name="Navbar_Settings" xml:space="preserve" id="11c45450-f270-4812-93ec-bd86de7937cc">
+  <value>Settings</value>
+</data>
+<data name="Navbar_Logout" xml:space="preserve" id="0c7c8fc8-a829-4317-adb7-cd047d6e03f9">
+  <value>Logout</value>
+</data>
+<data name="Dashboard_Welcome" xml:space="preserve" id="e119fa89-f1cd-4de0-83ab-d3e02d33dc0b">
+  <value>Welcome back!</value>
+</data>
+<data name="Dashboard_Stats" xml:space="preserve" id="fd486062-0d88-4a9f-9018-764228db784a">
+  <value>Statistics</value>
+</data>
+<data name="Settings_Language" xml:space="preserve" id="892ad7ce-c1d7-4ddc-b33a-98da01b0f21e">
+  <value>Language</value>
+</data>
+<data name="Settings_Theme" xml:space="preserve" id="2d262b77-876b-4163-8174-52795a30307d">
+  <value>Theme</value>
+</data>
+<data name="Settings_Save" xml:space="preserve" id="e562bcc1-c263-461e-80b7-8c5f35e73c7c">
+  <value>Save Settings</value>
+</data>
+<data name="Profile_Edit" xml:space="preserve" id="760ae8ec-968f-4b4d-a872-a40e2663c175">
+  <value>Edit Profile</value>
+</data>
+<data name="Profile_Name" xml:space="preserve" id="39acf03d-b942-49e3-8ff4-448f5b4bafe9">
+  <value>Name</value>
+</data>
+<data name="Profile_Email" xml:space="preserve" id="c465a4aa-0fe2-4fb1-988a-550808f89524">
+  <value>Email Address</value>
+</data>
+<data name="Profile_Update" xml:space="preserve" id="3b194e48-e995-4027-a6c3-c8764a84ed5e">
+  <value>Update</value>
+</data>
+<data name="Modal_Confirm" xml:space="preserve" id="fb3e6b87-13b1-47a0-a640-d7c4123d8903">
+  <value>Are you sure?</value>
+</data>
+<data name="Modal_Yes" xml:space="preserve" id="25355420-d89e-4254-81a9-f8130c3bc2bb">
+  <value>Yes</value>
+</data>
+<data name="Modal_No" xml:space="preserve" id="8283acf6-f72b-409e-824a-c1ad16c6bf2f">
+  <value>No</value>
+</data>
+<data name="Form_Required" xml:space="preserve" id="85c3167a-1bdb-48bd-87d8-a704460fb6fe">
+  <value>This field is required</value>
+</data>
+<data name="Form_InvalidEmail" xml:space="preserve" id="94b32486-337e-4da5-ac5d-676d0a3424b7">
+  <value>Please enter a valid email</value>
+</data>
+<data name="Notification_Saved" xml:space="preserve" id="d026e4a2-cc8d-457b-9d58-445b3a258322">
+  <value>Changes saved successfully</value>
+</data>
+<data name="Notification_Error" xml:space="preserve" id="18e15d50-44e5-4cee-a0a5-747398990f7c">
+  <value>Something went wrong</value>
+</data>
+<data name="Search_Placeholder" xml:space="preserve" id="ebc96ccd-1c29-4b5b-8ab2-3343521b86e7">
+  <value>Search...</value>
+</data>
+<data name="Button_Submit" xml:space="preserve" id="9870d328-e300-4ad2-bfca-0b523b3a820d">
+  <value>Submit</value>
+</data>
+<data name="Button_Cancel" xml:space="preserve" id="ee54713d-559c-4479-9500-cb2c31617952">
+  <value>Cancel</value>
+</data>
+<data name="Button_Delete" xml:space="preserve" id="7abed28c-5759-43fa-b1c3-57d9c5af092b">
+  <value>Delete</value>
+</data>
+<data name="Button_Close" xml:space="preserve" id="847898a7-2d4b-427a-b781-daa8c6bb950f">
+  <value>Close</value>
+</data>
+<data name="Error_404" xml:space="preserve" id="b6351e2e-f901-497b-9b1e-13ead31f0300">
+  <value>Page not found</value>
+</data>
+<data name="Error_500" xml:space="preserve" id="0978c683-5a03-4294-a371-4274eebe3e0f">
+  <value>Internal server error</value>
+</data>
+<data name="Footer_Copy" xml:space="preserve" id="ddf12bd1-3df6-43a5-aa21-4b0bf260ea03">
+  <value>© 2025 My WebApp. All rights reserved.</value>
+</data>
+<data name="Tooltip_Edit" xml:space="preserve" id="acfb359d-1b5d-49bf-8fbd-2dabf96fb716">
+  <value>Edit this item</value>
+</data>
+<data name="Tooltip_Delete" xml:space="preserve" id="979ea329-04e6-4f70-8c5d-b81754bf0b23">
+  <value>Delete this item</value>
+</data>
+<data name="Loading_Message" xml:space="preserve" id="b8d8488c-8da2-44dd-b9a1-ecc6e717044c">
+  <value>Loading, please wait...</value>
+</data>
+<data name="DatePicker_Placeholder" xml:space="preserve" id="7775a658-02f6-447c-8d7c-b0d0bc046452">
+  <value>Select a date</value>
+</data>
+<data name="Form_Success" xml:space="preserve" id="d642f082-0459-47ef-ad4d-8e74ff9baa32">
+  <value>Form submitted successfully</value>
+</data>
+<data name="Form_Reset" xml:space="preserve" id="d52d55fc-a978-43d0-8d0c-4d4e46f07b5e">
+  <value>Reset</value>
+</data>
+<data name="Validation_TooShort" xml:space="preserve" id="72248d16-dd8d-4254-b7f1-f09d46856693">
+  <value>Input is too short</value>
+</data>
+<data name="Validation_TooLong" xml:space="preserve" id="c1d82793-e2ec-41bf-8585-dabe2016a3a2">
+  <value>Input is too long</value>
+</data>
+<data name="Upload_Browse" xml:space="preserve" id="942b9106-3d47-443a-ba12-120732f58304">
+  <value>Browse files</value>
+</data>
+<data name="Upload_DragDrop" xml:space="preserve" id="a3176eb7-d8fe-4034-ab09-89f38f17a3c4">
+  <value>Or drag and drop files here</value>
+</data>
+<data name="Upload_Success" xml:space="preserve" id="d02ad3cc-1341-4c40-b43c-5e98055d30f3">
+  <value>File uploaded successfully</value>
+</data>
+<data name="Upload_Error" xml:space="preserve" id="20d99905-b882-4f75-a867-e3b26d8fe0e9">
+  <value>Upload failed</value>
+</data>
+</root>

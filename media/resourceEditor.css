@@ -11,13 +11,9 @@
   margin-bottom: 10px;
 }
 
-.searchbar {
-  width: 70%;
-}
-
 .create-button{
-  width: 30%;
-  min-width: 150px;
+  width: 25%;
+  min-width: 100px;
 }
 
 .table-wrapper {
@@ -58,4 +54,19 @@
 .delete-button {
   padding-left: 5px;
   padding-right: 5px;
+}
+
+.designer-accessability {
+  width: 25%;
+  min-width: 100px;
+  max-width: 200px;
+  background-color: var(--vscode-editor-background);
+  color: var(--vscode-editor-foreground);
+  border: none;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.hidden {
+  display: none;
 }

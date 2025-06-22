@@ -4,6 +4,10 @@ import { vscode } from "./constants/constants";
 import { Routes } from "./constants/vscodeRoutes";
 import { addChangeEvent, removeChangeEvent } from "./events/entry/entryCellChangeEvent";
 import { addInputEvent } from "./events/searchbar/searchbarInputEvent";
+import { AccessabilityTypeMapper } from "../backend/designer/accessabilityTypeMapper";
+import { UpdateAccessabilityEventArgs } from "./events/accessability/updateAccessabilityEventArgs";
+import { GetAccessabilityEventArgs } from "./events/accessability/getAccessabilityEventArgs";
+import { addAccessabilityChangeEvent } from "./events/accessability/updateAccessabilityEvent";
 
 // @ts-check
 // Script run within the webview itself.
@@ -11,6 +15,7 @@ import { addInputEvent } from "./events/searchbar/searchbarInputEvent";
   const resourceTable = document.getElementById("resource-table");
   const addButton = document.getElementsByClassName("create-button")[0];
   const searchbar = document.getElementsByClassName("searchbar")[0] as HTMLInputElement;
+  const designerSelect = document.getElementsByClassName("designer-accessability")[0] as HTMLSelectElement;
 
   if (addButton == null) {
     throw new Error("addbutton is null");
@@ -31,11 +36,13 @@ import { addInputEvent } from "./events/searchbar/searchbarInputEvent";
   const errorContainer = document.createElement("div");
   document.body.appendChild(errorContainer);
   errorContainer.className = "error";
-  errorContainer.style.display = "none";
+  errorContainer.classList.add("hidden");
 
   function updateContent(text: string) {
+    console.log("update webview");
     const resourceTable = document.getElementById("resource-table");
     resetTable();
+    createDesignerSelect();
 
     const parser = new DOMParser();
     let xmlDoc = parser.parseFromString(text, "text/xml");
@@ -96,6 +103,24 @@ import { addInputEvent } from "./events/searchbar/searchbarInputEvent";
     return cell;
   }
 
+  function createDesignerSelect() {
+    designerSelect.innerHTML = "";
+    const types = AccessabilityTypeMapper.GetAll();
+
+    types.forEach((t) => {
+      const option = document.createElement("option");
+      option.value = t.toString();
+      option.textContent = AccessabilityTypeMapper.MapToText(t);
+      designerSelect.appendChild(option);
+    });
+
+    addAccessabilityChangeEvent(designerSelect);
+
+    vscode.postMessage({
+      type: Routes.GetAccessability,
+    });
+  }
+
   function resetTable() {
     if (resourceTable) {
       resourceTable.innerHTML = "";
@@ -120,18 +145,26 @@ import { addInputEvent } from "./events/searchbar/searchbarInputEvent";
   window.addEventListener("message", (event) => {
     const message = event.data;
     switch (message.type) {
-      case "update":
+      case Routes.UpdateAllRoute:
         const text = message.text;
         updateContent(text);
         vscode.setState({ text });
         return;
 
-      case "updateSingle":
+      case Routes.UpdateSingleEntryRoute:
         updateSingleEntry(message.eventArgs);
         return;
 
       case Routes.SearchRoute:
         filterEntries(message.ids);
+        return;
+
+      case Routes.UpdateAccessability:
+        updateAccessability(message.eventArgs);
+        return;
+
+      case Routes.GetAccessability:
+        getAccessability(message.eventArgs);
         return;
     }
   });
@@ -147,17 +180,24 @@ import { addInputEvent } from "./events/searchbar/searchbarInputEvent";
     }
   }
 
+  function updateAccessability(args: UpdateAccessabilityEventArgs) {
+    designerSelect.value = args.accessabilityType.toString();
+  }
+
+  function getAccessability(args: GetAccessabilityEventArgs) {
+    designerSelect.value = args.accessabilityType.toString();
+  }
+
   function filterEntries(ids: string[]) {
     let entries = Array.from(document.getElementsByClassName("table-row"));
-    console.log(entries.length);
 
     entries.forEach((entry) => {
       if (!(entry instanceof HTMLElement)) return;
 
       if (!ids.includes(entry.id)) {
-        entry.style.display = "none";
+        entry.classList.add("hidden");
       } else {
-        entry.style.display = "table-row";
+        entry.classList.remove("hidden");
       }
     });
   }

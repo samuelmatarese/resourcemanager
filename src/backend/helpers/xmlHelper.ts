@@ -2,9 +2,8 @@ import { XMLSerializer, DOMParser } from "xmldom";
 import type { TextDocument } from "vscode";
 import { UpdateEntryEventArgs } from "../../webview/events/entry/updateEntryEventArgs";
 import { CellType } from "../../webview/cellType";
-import { AccessabilityType } from "../designer/accessabilityType";
+import { AccessabilityType } from "../../webview/events/accessability/accessabilityType";
 import { AccessabilityTypeMapper } from "../designer/accessabilityTypeMapper";
-import * as vscode from "vscode";
 
 export class XmlHelper {
   public static findEntryById(id: string, entries: HTMLCollectionOf<HTMLDataElement>): HTMLDataElement {
@@ -30,12 +29,28 @@ export class XmlHelper {
 
       case CellType.Value:
         let entryValue = entry.getElementsByTagName("value")[0];
-        entryValue.textContent = args.newValue;
+
+        if (entryValue == undefined) {
+          let valueNode = xmlDoc.createElement("value");
+          valueNode.textContent = args.newValue;
+          entry.appendChild(valueNode);
+        } else {
+          entryValue.textContent = args.newValue;
+        }
+
         break;
 
       case CellType.Comment:
         let entryComment = entry.getElementsByTagName("comment")[0];
-        entryComment.textContent = args.newValue;
+
+        if (entryComment == undefined) {
+          let valueNode = xmlDoc.createElement("comment");
+          valueNode.textContent = args.newValue;
+          entry.appendChild(valueNode);
+        } else {
+          entryComment.textContent = args.newValue;
+        }
+
         break;
     }
 
@@ -58,9 +73,9 @@ export class XmlHelper {
 
     entries.forEach((e) => {
       const entryValue = e.getElementsByTagName("value")[0].textContent?.toLowerCase();
-      const entryComment = e.getElementsByTagName("comment")[0].textContent?.toLowerCase();
+      const entryComment = e.getElementsByTagName("comment")[0];
 
-      if (e.getAttribute("name")?.toLowerCase().includes(searchText) || entryValue?.includes(searchText) || entryComment?.includes(searchText)) {
+      if (e.getAttribute("name")?.toLowerCase().includes(searchText) || entryValue?.includes(searchText) || (entryComment != undefined && entryComment.textContent?.includes(searchText))) {
         const id = e.getAttribute("id");
         if (id != null) {
           ids.push(id);
@@ -77,12 +92,15 @@ export class XmlHelper {
     let text: string[] = ["\n"];
 
     entries.forEach((e) => {
-      const entryComment = e.getElementsByTagName("comment")[0].textContent;
+      const entryComment = e.getElementsByTagName("comment")[0];
       const name = e.getAttribute("name");
 
-      text.push(`\t\t/// <summary>`);
-      text.push(`\t\t/// ${entryComment}`);
-      text.push(`\t\t/// </summary>`);
+      if (entryComment != undefined) {
+        text.push(`\t\t/// <summary>`);
+        text.push(`\t\t/// ${entryComment.textContent}`);
+        text.push(`\t\t/// </summary>`);
+      }
+
       text.push(`\t\t${AccessabilityTypeMapper.MapToText(accessabilityType)} static string ${name} => ResourceManager.GetString("${name}", resourceCulture);`);
       text.push("");
     });
@@ -104,6 +122,36 @@ export class XmlHelper {
         e.setAttribute("id", crypto.randomUUID());
       }
     });
+
+    const serializer = new XMLSerializer();
+    return serializer.serializeToString(xmlDoc);
+  }
+
+  public static checkAccessability(document: TextDocument): AccessabilityType | null {
+    const xmlDoc = this.getDocumentAsXml(document);
+    const nodes = xmlDoc.getElementsByTagName("accessability");
+
+    if (nodes.length === 0 || !nodes[0].textContent) {
+      return null;
+    }
+
+    return AccessabilityTypeMapper.MapToType(nodes[0].textContent);
+  }
+
+  public static createAccessability(document: string, type: AccessabilityType): string {
+    var parser = new DOMParser();
+
+    const xmlDoc = parser.parseFromString(document);
+    const nodes = xmlDoc.getElementsByTagName("accessability");
+
+    if (nodes.length === 0 || !nodes[0].textContent) {
+      let node = xmlDoc.createElement("accessability");
+      node.textContent = AccessabilityTypeMapper.MapToText(type);
+      const root = xmlDoc.documentElement;
+      root.insertBefore(node, root.firstChild);
+    } else {
+      nodes[0].textContent = AccessabilityTypeMapper.MapToText(type);
+    }
 
     const serializer = new XMLSerializer();
     return serializer.serializeToString(xmlDoc);

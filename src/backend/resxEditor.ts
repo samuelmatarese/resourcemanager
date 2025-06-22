@@ -6,6 +6,9 @@ import { XmlHelper } from "./helpers/xmlHelper";
 import { Routes } from "../webview/constants/vscodeRoutes";
 import { SearchbarInputEventArgs } from "../webview/events/searchbar/searchbarInputEventArgs";
 import { DesignerHelper } from "./helpers/designerHelper";
+import { AccessabilityType } from "../webview/events/accessability/accessabilityType";
+import { UpdateAccessabilityEventArgs } from "../webview/events/accessability/updateAccessabilityEventArgs";
+import { GetAccessabilityEventArgs } from "../webview/events/accessability/getAccessabilityEventArgs";
 
 export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
   private _updateWebViewType = UpdateType.None;
@@ -23,13 +26,19 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
 
   public async resolveCustomTextEditor(document: vscode.TextDocument, webviewPanel: vscode.WebviewPanel, _token: vscode.CancellationToken): Promise<void> {
     if (document.getText().trim().length === 0) {
-      const defaultContent = `<?xml version="1.0" encoding="utf-8"?>\n<root>\n</root>`;
+      const defaultContent = `<?xml version="1.0" encoding="utf-8"?>\n<root>\n\t<accessability>internal</accessability>\n</root>`;
       const edit = new vscode.WorkspaceEdit();
       edit.insert(document.uri, new vscode.Position(0, 0), defaultContent + "\n");
       await vscode.workspace.applyEdit(edit);
       await document.save();
     } else {
-      const updatedDoc = XmlHelper.addIdsToAlreadyExistingEntries(document);
+      let updatedDoc = XmlHelper.addIdsToAlreadyExistingEntries(document);
+      const accessability = XmlHelper.checkAccessability(document);
+
+      if (accessability == null) {
+        updatedDoc = XmlHelper.createAccessability(updatedDoc, AccessabilityType.Internal);
+      }
+
       const edit = new vscode.WorkspaceEdit();
       edit.replace(document.uri, new vscode.Range(document.positionAt(0), document.positionAt(document.getText().length)), updatedDoc);
       await vscode.workspace.applyEdit(edit);
@@ -61,6 +70,20 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
       });
     }
 
+    function updateAccessability(args: UpdateAccessabilityEventArgs) {
+      webviewPanel.webview.postMessage({
+        type: Routes.UpdateAccessability,
+        eventArgs: args,
+      });
+    }
+
+    function getAccessability(args: GetAccessabilityEventArgs) {
+      webviewPanel.webview.postMessage({
+        type: Routes.GetAccessability,
+        eventArgs: args,
+      });
+    }
+
     function filterEntries(ids: string[]) {
       webviewPanel.webview.postMessage({
         type: Routes.SearchRoute,
@@ -68,9 +91,9 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
       });
     }
 
-    const saveSubscription = vscode.workspace.onWillSaveTextDocument((e) => {
-      if (e.document.uri.toString() === document.uri.toString()) {
-        DesignerHelper.GenerateDesignerFile(document);
+    const saveSubscription = vscode.workspace.onDidSaveTextDocument((doc) => {
+      if (doc.uri.toString() === document.uri.toString()) {
+        DesignerHelper.GenerateDesignerFile(doc);
       }
     });
 
@@ -90,7 +113,7 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
       saveSubscription.dispose();
     });
 
-    webviewPanel.webview.onDidReceiveMessage((e) => {
+    webviewPanel.webview.onDidReceiveMessage(async (e) => {
       switch (e.type) {
         case "add":
           this._updateWebViewType = UpdateType.Full;
@@ -99,8 +122,7 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
 
         case "editEntry":
           this._updateWebViewType = UpdateType.Single;
-          this.editEntry(document, e.eventArgs);
-          singleUpdateWebview(e.eventArgs);
+          await this.editEntry(document, e.eventArgs);
           return;
 
         case "delete":
@@ -111,6 +133,19 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
         case Routes.SearchRoute:
           const ids = this.searchEntries(document, e.eventArgs);
           filterEntries(ids);
+          return;
+
+        case Routes.UpdateAccessability:
+          await this.updateAccessability(document, e.eventArgs);
+          updateAccessability(e.eventArgs);
+          return;
+
+        case Routes.GetAccessability:
+          const accessability = this.getAccessability(document);
+          const args: GetAccessabilityEventArgs = {
+            accessabilityType: accessability,
+          };
+          getAccessability(args);
           return;
       }
     });
@@ -148,7 +183,7 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
     const edit = new vscode.WorkspaceEdit();
     const text = document.getText();
 
-    const regex = new RegExp(`<data[^>]*id="${id}"[^>]*>[\\s\\S]*?<\\/data>`, "g");
+    const regex = new RegExp(`(?:\\r?\\n)?\\s*<data[^>]*id="${id}"[^>]*>[\\s\\S]*?<\\/data>\\s*(?:\\r?\\n)?`, "g");
     const match = regex.exec(text);
 
     if (match && match.index !== undefined) {
@@ -164,7 +199,27 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
     }
   }
 
-  private editEntry(document: vscode.TextDocument, args: UpdateEntryEventArgs) {
+  private async updateAccessability(document: vscode.TextDocument, args: UpdateAccessabilityEventArgs) {
+    const edit = new vscode.WorkspaceEdit();
+    const updatedDoc = XmlHelper.createAccessability(document.getText(), args.accessabilityType);
+    const fullRange = new vscode.Range(document.positionAt(0), document.positionAt(document.getText().length));
+
+    edit.replace(document.uri, fullRange, updatedDoc);
+    await vscode.workspace.applyEdit(edit);
+  }
+
+  private getAccessability(document: vscode.TextDocument) {
+    const accessability = XmlHelper.checkAccessability(document);
+
+    if (accessability == null || accessability == undefined) {
+      vscode.window.showErrorMessage("file is not correctly formatted. Accessability is missing");
+      throw new Error("file is not correctly formatted. Accessability is missing");
+    }
+
+    return accessability;
+  }
+
+  private async editEntry(document: vscode.TextDocument, args: UpdateEntryEventArgs) {
     const edit = new vscode.WorkspaceEdit();
     let newText = "";
 
@@ -173,11 +228,11 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
     const fullRange = new vscode.Range(document.positionAt(0), document.positionAt(document.getText().length));
 
     edit.replace(document.uri, fullRange, newText);
-    vscode.workspace.applyEdit(edit);
+    await vscode.workspace.applyEdit(edit);
   }
 
   private generateFormattedDataXml(name: string = "new_entry", value: string = "", comment: string = ""): string {
-    return `<data id="${crypto.randomUUID()}" name="${name}" xml:space="preserve">\n\t<value>${value}</value>\n\t<comment>${comment}</comment>\n</data>`;
+    return `\t<data id="${crypto.randomUUID()}" name="${name}" xml:space="preserve">\n\t\t<value>${value}</value>\n\t\t<comment>${comment}</comment>\n\t</data>`;
   }
 
   private getHtmlForWebview(webview: vscode.Webview): string {
@@ -198,13 +253,7 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
             <html lang="en">
             <head>
                 <meta charset="UTF-8">
-
-                <!--
-                Use a content security policy to only allow loading images from https or from our extension directory,
-                and only allow scripts that have a specific nonce.
-                -->
                 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${webview.cspSource}; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
-
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
                 <link href="${styleResetUri}" rel="stylesheet" />
@@ -215,6 +264,7 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
             </head>
             <body>
                 <div class="toolbar">
+                  <select name="designer-accessability" class="designer-accessability"></select>
                   <input class="searchbar" type="text" placeholder="search...">
                   <button class="create-button">New Entry</button>
                 </div>
