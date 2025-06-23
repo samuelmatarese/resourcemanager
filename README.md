@@ -27,6 +27,7 @@ The toolbar also includes a search bar, allowing you to quickly find specific en
 
 ## Roadmap
 
+- [ ] Shortcuts
 - [ ] Better error handling
 - [ ] Multilanguage support
 
