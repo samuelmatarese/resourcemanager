@@ -8,7 +8,7 @@ import { AccessabilityTypeMapper } from "../designer/accessabilityTypeMapper";
 export class XmlHelper {
   public static findEntryById(id: string, entries: HTMLCollectionOf<HTMLDataElement>): HTMLDataElement {
     for (let i = 0; i < entries.length; i++) {
-      if (entries[i].getAttribute("id") == id) {
+      if (entries[i].getAttribute("id") === id) {
         return entries[i];
       }
     }
@@ -30,7 +30,7 @@ export class XmlHelper {
       case CellType.Value:
         let entryValue = entry.getElementsByTagName("value")[0];
 
-        if (entryValue == undefined) {
+        if (entryValue === undefined) {
           let valueNode = xmlDoc.createElement("value");
           valueNode.textContent = args.newValue;
           entry.appendChild(valueNode);
@@ -43,7 +43,7 @@ export class XmlHelper {
       case CellType.Comment:
         let entryComment = entry.getElementsByTagName("comment")[0];
 
-        if (entryComment == undefined) {
+        if (entryComment === undefined) {
           let valueNode = xmlDoc.createElement("comment");
           valueNode.textContent = args.newValue;
           entry.appendChild(valueNode);
@@ -75,9 +75,9 @@ export class XmlHelper {
       const entryValue = e.getElementsByTagName("value")[0].textContent?.toLowerCase();
       const entryComment = e.getElementsByTagName("comment")[0];
 
-      if (e.getAttribute("name")?.toLowerCase().includes(searchText) || entryValue?.includes(searchText) || (entryComment != undefined && entryComment.textContent?.includes(searchText))) {
+      if (e.getAttribute("name")?.toLowerCase().includes(searchText) || entryValue?.includes(searchText) || (entryComment !== undefined && entryComment.textContent?.includes(searchText))) {
         const id = e.getAttribute("id");
-        if (id != null) {
+        if (id !== null) {
           ids.push(id);
         }
       }
@@ -95,7 +95,7 @@ export class XmlHelper {
       const entryComment = e.getElementsByTagName("comment")[0];
       const name = e.getAttribute("name");
 
-      if (entryComment != undefined) {
+      if (entryComment !== undefined) {
         text.push(`\t\t/// <summary>`);
         text.push(`\t\t/// ${entryComment.textContent}`);
         text.push(`\t\t/// </summary>`);
@@ -118,7 +118,7 @@ export class XmlHelper {
     entries.forEach((e) => {
       const id = e.getAttribute("id");
 
-      if (id == null || id == "") {
+      if (id === null || id === "") {
         e.setAttribute("id", crypto.randomUUID());
       }
     });
@@ -155,6 +155,10 @@ export class XmlHelper {
 
     const serializer = new XMLSerializer();
     return serializer.serializeToString(xmlDoc);
+  }
+
+  public static generateFormattedDataXml(name: string = "new_entry", value: string = "", comment: string = ""): string {
+    return `\t<data id="${crypto.randomUUID()}" name="${name}" xml:space="preserve">\n\t\t<value>${value}</value>\n\t\t<comment>${comment}</comment>\n\t</data>`;
   }
 
   private static getDocumentAsXml(document: TextDocument): XMLDocument {

@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace exampleFiles {
+namespace resourcemanager.exampleFiles {
     using System;
     
     
@@ -33,7 +33,7 @@ namespace exampleFiles {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    var temp = new global::System.Resources.ResourceManager("exampleFiles.SampleText", typeof(SampleText).Assembly);
+                    var temp = new global::System.Resources.ResourceManager("resourcemanager.exampleFiles.SampleText", typeof(SampleText).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

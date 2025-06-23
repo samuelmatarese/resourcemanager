@@ -35,7 +35,7 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
       let updatedDoc = XmlHelper.addIdsToAlreadyExistingEntries(document);
       const accessability = XmlHelper.checkAccessability(document);
 
-      if (accessability == null) {
+      if (accessability === null) {
         updatedDoc = XmlHelper.createAccessability(updatedDoc, AccessabilityType.Internal);
       }
 
@@ -44,6 +44,7 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
       await vscode.workspace.applyEdit(edit);
       await document.save();
     }
+
     updateWebview();
 
     webviewPanel.webview.options = {
@@ -98,9 +99,9 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
     });
 
     const changeDocumentSubscription = vscode.workspace.onDidChangeTextDocument((e) => {
-      if (e.document.uri.toString() === document.uri.toString() && this._updateWebViewType == UpdateType.Full) {
+      if (e.document.uri.toString() === document.uri.toString() && this._updateWebViewType === UpdateType.Full) {
         updateWebview();
-      } else if (e.document.uri.toString() === document.uri.toString() && this._updateWebViewType == UpdateType.Single && this._updateEntryEventArgs != undefined) {
+      } else if (e.document.uri.toString() === document.uri.toString() && this._updateWebViewType === UpdateType.Single && this._updateEntryEventArgs !== undefined) {
         singleUpdateWebview(this._updateEntryEventArgs);
         this._updateEntryEventArgs = undefined;
       }
@@ -115,17 +116,17 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
 
     webviewPanel.webview.onDidReceiveMessage(async (e) => {
       switch (e.type) {
-        case "add":
+        case Routes.AddEntry:
           this._updateWebViewType = UpdateType.Full;
           this.addEntry(document);
           return;
 
-        case "editEntry":
+        case Routes.EditEntry:
           this._updateWebViewType = UpdateType.Single;
           await this.editEntry(document, e.eventArgs);
           return;
 
-        case "delete":
+        case Routes.DeleteEntry:
           this._updateWebViewType = UpdateType.Full;
           this.deleteEntry(document, e.id);
           return;
@@ -174,7 +175,7 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
       return;
     }
 
-    edit.insert(document.uri, document.positionAt(insertOffset), this.generateFormattedDataXml() + "\n");
+    edit.insert(document.uri, document.positionAt(insertOffset), XmlHelper.generateFormattedDataXml() + "\n");
 
     return vscode.workspace.applyEdit(edit);
   }
@@ -211,7 +212,7 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
   private getAccessability(document: vscode.TextDocument) {
     const accessability = XmlHelper.checkAccessability(document);
 
-    if (accessability == null || accessability == undefined) {
+    if (accessability === null || accessability === undefined) {
       vscode.window.showErrorMessage("file is not correctly formatted. Accessability is missing");
       throw new Error("file is not correctly formatted. Accessability is missing");
     }
@@ -229,10 +230,6 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
 
     edit.replace(document.uri, fullRange, newText);
     await vscode.workspace.applyEdit(edit);
-  }
-
-  private generateFormattedDataXml(name: string = "new_entry", value: string = "", comment: string = ""): string {
-    return `\t<data id="${crypto.randomUUID()}" name="${name}" xml:space="preserve">\n\t\t<value>${value}</value>\n\t\t<comment>${comment}</comment>\n\t</data>`;
   }
 
   private getHtmlForWebview(webview: vscode.Webview): string {

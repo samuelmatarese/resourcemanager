@@ -17,17 +17,17 @@ import { addAccessabilityChangeEvent } from "./events/accessability/updateAccess
   const searchbar = document.getElementsByClassName("searchbar")[0] as HTMLInputElement;
   const designerSelect = document.getElementsByClassName("designer-accessability")[0] as HTMLSelectElement;
 
-  if (addButton == null) {
+  if (addButton === null) {
     throw new Error("addbutton is null");
   }
 
-  if (searchbar == null) {
+  if (searchbar === null) {
     throw new Error("searchbar is null");
   }
 
   addButton.addEventListener("click", () => {
     vscode.postMessage({
-      type: "add",
+      type: Routes.AddEntry,
     });
   });
 
@@ -55,7 +55,7 @@ import { addAccessabilityChangeEvent } from "./events/accessability/updateAccess
       const comment = rows[i].getElementsByTagName("comment")[0]?.textContent ?? "";
       const rowElement = document.createElement("tr");
 
-      if (id == null) {
+      if (id === null) {
         vscode.window.showWarningMessage(`File is broken. Name in entry not defined.`);
         throw new Error(`File is broken. Name in entry not defined.`);
       }
@@ -82,7 +82,7 @@ import { addAccessabilityChangeEvent } from "./events/accessability/updateAccess
     button.addEventListener("click", () => {
       vscode.postMessage({
         id: id,
-        type: "delete",
+        type: Routes.DeleteEntry,
       });
     });
 
@@ -192,7 +192,7 @@ import { addAccessabilityChangeEvent } from "./events/accessability/updateAccess
     let entries = Array.from(document.getElementsByClassName("table-row"));
 
     entries.forEach((entry) => {
-      if (!(entry instanceof HTMLElement)) return;
+      if (!(entry instanceof HTMLElement)) { return; }
 
       if (!ids.includes(entry.id)) {
         entry.classList.add("hidden");
