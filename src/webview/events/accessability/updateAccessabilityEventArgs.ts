@@ -1,5 +1,5 @@
-import { AccessabilityType } from "./accessabilityType"
+import { AccessabilityType } from "./accessabilityType";
 
 export type UpdateAccessabilityEventArgs = {
     accessabilityType: AccessabilityType;
-}
+};

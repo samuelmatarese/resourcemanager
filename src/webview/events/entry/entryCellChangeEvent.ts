@@ -1,6 +1,7 @@
 import { UpdateEntryEventArgs } from "./updateEntryEventArgs";
 import { CellType } from "../../cellType";
 import { vscode } from "../../constants/constants";
+import { Routes } from "../../constants/vscodeRoutes";
 
 export const changeEventHandlers = new Map<HTMLTextAreaElement, EventListener>();
 
@@ -19,7 +20,7 @@ export const addChangeEvent = (
 
     vscode.postMessage({
       eventArgs: eventArgs,
-      type: "editEntry",
+      type: Routes.EditEntry,
     });
   });
 };
