@@ -6,7 +6,12 @@ import { Routes } from "../../constants/vscodeRoutes";
 export const changeEventHandlers = new Map<HTMLSelectElement, EventListener>();
 
 export const addAccessibilityChangeEvent = (element: HTMLSelectElement): void => {
-  element.addEventListener("change", (event) => {
+  const existingHandler = changeEventHandlers.get(element);
+  if (existingHandler) {
+    element.removeEventListener("change", existingHandler);
+  }
+
+  const handler = (event: Event) => {
     const accessibility = AccessibilityTypeMapper.MapToType((event.target as HTMLSelectElement).value);
     const eventArgs: UpdateAccessibilityEventArgs = {
       accessibilityType: accessibility,
@@ -16,5 +21,8 @@ export const addAccessibilityChangeEvent = (element: HTMLSelectElement): void =>
       eventArgs: eventArgs,
       type: Routes.UpdateAccessibility,
     });
-  });
+  };
+
+  element.addEventListener("change", handler);
+  changeEventHandlers.set(element, handler);
 };
