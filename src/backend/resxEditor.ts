@@ -118,7 +118,7 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
       switch (e.type) {
         case Routes.AddEntry:
           this._updateWebViewType = UpdateType.Full;
-          this.addEntry(document);
+          await this.addEntry(document);
           return;
 
         case Routes.EditEntry:
@@ -128,7 +128,7 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
 
         case Routes.DeleteEntry:
           this._updateWebViewType = UpdateType.Full;
-          this.deleteEntry(document, e.id);
+          await this.deleteEntry(document, e.id);
           return;
 
         case Routes.SearchRoute:
@@ -152,19 +152,19 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
     });
   }
 
-  private addEntry(document: vscode.TextDocument) {
-    return this.insertDefaultResource(document);
+  private async addEntry(document: vscode.TextDocument) {
+    await this.insertDefaultResource(document);
   }
 
-  private deleteEntry(document: vscode.TextDocument, id: string) {
-    return this.removeEntry(document, id);
+  private async deleteEntry(document: vscode.TextDocument, id: string) {
+    await this.removeEntry(document, id);
   }
 
   private searchEntries(document: vscode.TextDocument, args: SearchbarInputEventArgs): string[] {
     return XmlHelper.filterEntriesBySearchText(document, args.searchText);
   }
 
-  private insertDefaultResource(document: vscode.TextDocument) {
+  private async insertDefaultResource(document: vscode.TextDocument) {
     const edit = new vscode.WorkspaceEdit();
     const xmlText = document.getText();
     const rootCloseTag = "</root>";
@@ -176,11 +176,10 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
     }
 
     edit.insert(document.uri, document.positionAt(insertOffset), XmlHelper.generateFormattedDataXml() + "\n");
-
-    return vscode.workspace.applyEdit(edit);
+    await vscode.workspace.applyEdit(edit);
   }
 
-  private removeEntry(document: vscode.TextDocument, id: string) {
+  private async removeEntry(document: vscode.TextDocument, id: string) {
     const edit = new vscode.WorkspaceEdit();
     const text = document.getText();
 
@@ -193,10 +192,9 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
       const range = new vscode.Range(startPos, endPos);
 
       edit.delete(document.uri, range);
-      return vscode.workspace.applyEdit(edit);
+      await vscode.workspace.applyEdit(edit);
     } else {
       vscode.window.showWarningMessage(`No entry with id="${id}" found.`);
-      return;
     }
   }
 
@@ -233,16 +231,10 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
   }
 
   private getHtmlForWebview(webview: vscode.Webview): string {
-    // Local path to script and css for the webview
     const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, "out", "webview", "webview.js"));
-
     const styleResetUri = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, "media", "reset.css"));
-
     const styleVSCodeUri = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, "media", "vscode.css"));
-
     const styleMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, "media", "resourceEditor.css"));
-
-    // Use a nonce to whitelist which scripts can be run
     const nonce = getNonce();
 
     return /* html */ `
