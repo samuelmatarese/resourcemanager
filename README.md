@@ -35,17 +35,3 @@ The toolbar also includes a search bar, allowing you to quickly find specific en
 ## Known Issues
 
 There is currently no logic to prevent you from using duplicate names for your resources.
-
-## Release Notes
-
-### 0.0.3
-
-Add Icon for extension.
-
-### 0.0.2
-
-Fixes a bug where the editor would not start when opening the extension.
-
-### 0.0.1
-
-Initial beta Release
