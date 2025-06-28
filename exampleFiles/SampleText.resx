@@ -1,4 +1,4 @@
-<root><accessability>public</accessability>
+<root><accessability>internal</accessability>
 <data name="Login_Title" xml:space="preserve" id="7cb59222-f318-4ff3-96a8-fcd014bcd48a">
   <value>Login to your account</value>
   <comment>Title of the login form</comment>
@@ -29,16 +29,16 @@
 </data>
 <data name="Register_Email" xml:space="preserve" id="2b80b7c1-ff92-4a60-9fd1-b9e7ebc55c3a">
   <value>Email</value>
-</data>
+<comment>sfdsfsd</comment></data>
 <data name="Register_ConfirmPassword" xml:space="preserve" id="f62ce915-b174-468d-a52b-b9e7504ab691">
   <value>Confirm Password</value>
-</data>
+<comment>fsdfsd</comment></data>
 <data name="Register_Button" xml:space="preserve" id="598880d2-6caa-43c3-ba38-0eba9a6d55fa">
   <value>Sign Up</value>
-</data>
+<comment>fdsfsdf</comment></data>
 <data name="Navbar_Home" xml:space="preserve" id="36548c3f-3565-46cf-9930-c550fd2aac7b">
   <value>Home</value>
-</data>
+<comment>sdfsdf</comment></data>
 <data name="Navbar_Profile" xml:space="preserve" id="9f8dd740-6baf-47cd-a52c-be1b677eedc0">
   <value>Profile</value>
 </data>

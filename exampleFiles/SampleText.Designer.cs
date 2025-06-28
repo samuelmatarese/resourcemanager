@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace resourcemanager.exampleFiles {
+namespace exampleFiles {
     using System;
     
     
@@ -17,23 +17,23 @@ namespace resourcemanager.exampleFiles {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class SampleText {
+    internal class SampleText {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
-        public SampleText() {
+        internal SampleText() {
         }
         
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    var temp = new global::System.Resources.ResourceManager("resourcemanager.exampleFiles.SampleText", typeof(SampleText).Assembly);
+                    var temp = new global::System.Resources.ResourceManager("exampleFiles.SampleText", typeof(SampleText).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -45,7 +45,7 @@ namespace resourcemanager.exampleFiles {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -57,123 +57,135 @@ namespace resourcemanager.exampleFiles {
 		/// <summary>
 		/// Title of the login form
 		/// </summary>
-		public static string Login_Title => ResourceManager.GetString("Login_Title", resourceCulture);
+		internal static string Login_Title => ResourceManager.GetString("Login_Title", resourceCulture);
 
 		/// <summary>
 		/// Label for username input
 		/// </summary>
-		public static string Login_Username => ResourceManager.GetString("Login_Username", resourceCulture);
+		internal static string Login_Username => ResourceManager.GetString("Login_Username", resourceCulture);
 
 		/// <summary>
 		/// Label for password input
 		/// </summary>
-		public static string Login_Password => ResourceManager.GetString("Login_Password", resourceCulture);
+		internal static string Login_Password => ResourceManager.GetString("Login_Password", resourceCulture);
 
 		/// <summary>
 		/// Text on login button
 		/// </summary>
-		public static string Login_Button => ResourceManager.GetString("Login_Button", resourceCulture);
+		internal static string Login_Button => ResourceManager.GetString("Login_Button", resourceCulture);
 
 		/// <summary>
 		/// Login error message
 		/// </summary>
-		public static string Login_Error => ResourceManager.GetString("Login_Error", resourceCulture);
+		internal static string Login_Error => ResourceManager.GetString("Login_Error", resourceCulture);
 
 		/// <summary>
 		/// Link to reset password
 		/// </summary>
-		public static string Login_ForgotPassword => ResourceManager.GetString("Login_ForgotPassword", resourceCulture);
+		internal static string Login_ForgotPassword => ResourceManager.GetString("Login_ForgotPassword", resourceCulture);
 
 		/// <summary>
 		/// Registration form title
 		/// </summary>
-		public static string Register_Title => ResourceManager.GetString("Register_Title", resourceCulture);
+		internal static string Register_Title => ResourceManager.GetString("Register_Title", resourceCulture);
 
-		public static string Register_Email => ResourceManager.GetString("Register_Email", resourceCulture);
+		/// <summary>
+		/// sfdsfsd
+		/// </summary>
+		internal static string Register_Email => ResourceManager.GetString("Register_Email", resourceCulture);
 
-		public static string Register_ConfirmPassword => ResourceManager.GetString("Register_ConfirmPassword", resourceCulture);
+		/// <summary>
+		/// fsdfsd
+		/// </summary>
+		internal static string Register_ConfirmPassword => ResourceManager.GetString("Register_ConfirmPassword", resourceCulture);
 
-		public static string Register_Button => ResourceManager.GetString("Register_Button", resourceCulture);
+		/// <summary>
+		/// fdsfsdf
+		/// </summary>
+		internal static string Register_Button => ResourceManager.GetString("Register_Button", resourceCulture);
 
-		public static string Navbar_Home => ResourceManager.GetString("Navbar_Home", resourceCulture);
+		/// <summary>
+		/// sdfsdf
+		/// </summary>
+		internal static string Navbar_Home => ResourceManager.GetString("Navbar_Home", resourceCulture);
 
-		public static string Navbar_Profile => ResourceManager.GetString("Navbar_Profile", resourceCulture);
+		internal static string Navbar_Profile => ResourceManager.GetString("Navbar_Profile", resourceCulture);
 
-		public static string Navbar_Settings => ResourceManager.GetString("Navbar_Settings", resourceCulture);
+		internal static string Navbar_Settings => ResourceManager.GetString("Navbar_Settings", resourceCulture);
 
-		public static string Navbar_Logout => ResourceManager.GetString("Navbar_Logout", resourceCulture);
+		internal static string Navbar_Logout => ResourceManager.GetString("Navbar_Logout", resourceCulture);
 
-		public static string Dashboard_Welcome => ResourceManager.GetString("Dashboard_Welcome", resourceCulture);
+		internal static string Dashboard_Welcome => ResourceManager.GetString("Dashboard_Welcome", resourceCulture);
 
-		public static string Dashboard_Stats => ResourceManager.GetString("Dashboard_Stats", resourceCulture);
+		internal static string Dashboard_Stats => ResourceManager.GetString("Dashboard_Stats", resourceCulture);
 
-		public static string Settings_Language => ResourceManager.GetString("Settings_Language", resourceCulture);
+		internal static string Settings_Language => ResourceManager.GetString("Settings_Language", resourceCulture);
 
-		public static string Settings_Theme => ResourceManager.GetString("Settings_Theme", resourceCulture);
+		internal static string Settings_Theme => ResourceManager.GetString("Settings_Theme", resourceCulture);
 
-		public static string Settings_Save => ResourceManager.GetString("Settings_Save", resourceCulture);
+		internal static string Settings_Save => ResourceManager.GetString("Settings_Save", resourceCulture);
 
-		public static string Profile_Edit => ResourceManager.GetString("Profile_Edit", resourceCulture);
+		internal static string Profile_Edit => ResourceManager.GetString("Profile_Edit", resourceCulture);
 
-		public static string Profile_Name => ResourceManager.GetString("Profile_Name", resourceCulture);
+		internal static string Profile_Name => ResourceManager.GetString("Profile_Name", resourceCulture);
 
-		public static string Profile_Email => ResourceManager.GetString("Profile_Email", resourceCulture);
+		internal static string Profile_Email => ResourceManager.GetString("Profile_Email", resourceCulture);
 
-		public static string Profile_Update => ResourceManager.GetString("Profile_Update", resourceCulture);
+		internal static string Profile_Update => ResourceManager.GetString("Profile_Update", resourceCulture);
 
-		public static string Modal_Confirm => ResourceManager.GetString("Modal_Confirm", resourceCulture);
+		internal static string Modal_Confirm => ResourceManager.GetString("Modal_Confirm", resourceCulture);
 
-		public static string Modal_Yes => ResourceManager.GetString("Modal_Yes", resourceCulture);
+		internal static string Modal_Yes => ResourceManager.GetString("Modal_Yes", resourceCulture);
 
-		public static string Modal_No => ResourceManager.GetString("Modal_No", resourceCulture);
+		internal static string Modal_No => ResourceManager.GetString("Modal_No", resourceCulture);
 
-		public static string Form_Required => ResourceManager.GetString("Form_Required", resourceCulture);
+		internal static string Form_Required => ResourceManager.GetString("Form_Required", resourceCulture);
 
-		public static string Form_InvalidEmail => ResourceManager.GetString("Form_InvalidEmail", resourceCulture);
+		internal static string Form_InvalidEmail => ResourceManager.GetString("Form_InvalidEmail", resourceCulture);
 
-		public static string Notification_Saved => ResourceManager.GetString("Notification_Saved", resourceCulture);
+		internal static string Notification_Saved => ResourceManager.GetString("Notification_Saved", resourceCulture);
 
-		public static string Notification_Error => ResourceManager.GetString("Notification_Error", resourceCulture);
+		internal static string Notification_Error => ResourceManager.GetString("Notification_Error", resourceCulture);
 
-		public static string Search_Placeholder => ResourceManager.GetString("Search_Placeholder", resourceCulture);
+		internal static string Search_Placeholder => ResourceManager.GetString("Search_Placeholder", resourceCulture);
 
-		public static string Button_Submit => ResourceManager.GetString("Button_Submit", resourceCulture);
+		internal static string Button_Submit => ResourceManager.GetString("Button_Submit", resourceCulture);
 
-		public static string Button_Cancel => ResourceManager.GetString("Button_Cancel", resourceCulture);
+		internal static string Button_Cancel => ResourceManager.GetString("Button_Cancel", resourceCulture);
 
-		public static string Button_Delete => ResourceManager.GetString("Button_Delete", resourceCulture);
+		internal static string Button_Delete => ResourceManager.GetString("Button_Delete", resourceCulture);
 
-		public static string Button_Close => ResourceManager.GetString("Button_Close", resourceCulture);
+		internal static string Button_Close => ResourceManager.GetString("Button_Close", resourceCulture);
 
-		public static string Error_404 => ResourceManager.GetString("Error_404", resourceCulture);
+		internal static string Error_404 => ResourceManager.GetString("Error_404", resourceCulture);
 
-		public static string Error_500 => ResourceManager.GetString("Error_500", resourceCulture);
+		internal static string Error_500 => ResourceManager.GetString("Error_500", resourceCulture);
 
-		public static string Footer_Copy => ResourceManager.GetString("Footer_Copy", resourceCulture);
+		internal static string Footer_Copy => ResourceManager.GetString("Footer_Copy", resourceCulture);
 
-		public static string Tooltip_Edit => ResourceManager.GetString("Tooltip_Edit", resourceCulture);
+		internal static string Tooltip_Edit => ResourceManager.GetString("Tooltip_Edit", resourceCulture);
 
-		public static string Tooltip_Delete => ResourceManager.GetString("Tooltip_Delete", resourceCulture);
+		internal static string Tooltip_Delete => ResourceManager.GetString("Tooltip_Delete", resourceCulture);
 
-		public static string Loading_Message => ResourceManager.GetString("Loading_Message", resourceCulture);
+		internal static string Loading_Message => ResourceManager.GetString("Loading_Message", resourceCulture);
 
-		public static string DatePicker_Placeholder => ResourceManager.GetString("DatePicker_Placeholder", resourceCulture);
+		internal static string DatePicker_Placeholder => ResourceManager.GetString("DatePicker_Placeholder", resourceCulture);
 
-		public static string Form_Success => ResourceManager.GetString("Form_Success", resourceCulture);
+		internal static string Form_Success => ResourceManager.GetString("Form_Success", resourceCulture);
 
-		public static string Form_Reset => ResourceManager.GetString("Form_Reset", resourceCulture);
+		internal static string Form_Reset => ResourceManager.GetString("Form_Reset", resourceCulture);
 
-		public static string Validation_TooShort => ResourceManager.GetString("Validation_TooShort", resourceCulture);
+		internal static string Validation_TooShort => ResourceManager.GetString("Validation_TooShort", resourceCulture);
 
-		public static string Validation_TooLong => ResourceManager.GetString("Validation_TooLong", resourceCulture);
+		internal static string Validation_TooLong => ResourceManager.GetString("Validation_TooLong", resourceCulture);
 
-		public static string Upload_Browse => ResourceManager.GetString("Upload_Browse", resourceCulture);
+		internal static string Upload_Browse => ResourceManager.GetString("Upload_Browse", resourceCulture);
 
-		public static string Upload_DragDrop => ResourceManager.GetString("Upload_DragDrop", resourceCulture);
+		internal static string Upload_DragDrop => ResourceManager.GetString("Upload_DragDrop", resourceCulture);
 
-		public static string Upload_Success => ResourceManager.GetString("Upload_Success", resourceCulture);
+		internal static string Upload_Success => ResourceManager.GetString("Upload_Success", resourceCulture);
 
-		public static string Upload_Error => ResourceManager.GetString("Upload_Error", resourceCulture);
+		internal static string Upload_Error => ResourceManager.GetString("Upload_Error", resourceCulture);
 
 	}
 }
