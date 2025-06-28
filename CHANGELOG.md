@@ -1,9 +1,13 @@
-# Change Log
+# Changelog
 
-All notable changes to the "rescourcemanager" extension will be documented in this file.
-
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+All important changes to the project are documented in this changelog.  
+This changelog has been maintained since version 0.1.0.
 
 ## [Unreleased]
 
-- Initial release
+### Added
+- Accessibility option to skip designer file creation and delete the file if it already exists
+
+### Changed
+
+### Fixed

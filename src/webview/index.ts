@@ -4,10 +4,10 @@ import { vscode } from "./constants/constants";
 import { Routes } from "./constants/vscodeRoutes";
 import { addChangeEvent, removeChangeEvent } from "./events/entry/entryCellChangeEvent";
 import { addInputEvent } from "./events/searchbar/searchbarInputEvent";
-import { AccessabilityTypeMapper } from "../backend/designer/accessabilityTypeMapper";
-import { UpdateAccessabilityEventArgs } from "./events/accessability/updateAccessabilityEventArgs";
-import { GetAccessabilityEventArgs } from "./events/accessability/getAccessabilityEventArgs";
-import { addAccessabilityChangeEvent } from "./events/accessability/updateAccessabilityEvent";
+import { AccessibilityTypeMapper } from "../backend/designer/accessibilityTypeMapper";
+import { UpdateAccessibilityEventArgs } from "./events/accessibility/updateAccessibilityEventArgs";
+import { GetAccessibilityEventArgs } from "./events/accessibility/getAccessibilityEventArgs";
+import { addAccessibilityChangeEvent } from "./events/accessibility/updateAccessibilityEvent";
 
 // @ts-check
 // Script run within the webview itself.
@@ -105,19 +105,19 @@ import { addAccessabilityChangeEvent } from "./events/accessability/updateAccess
 
   function createDesignerSelect() {
     designerSelect.innerHTML = "";
-    const types = AccessabilityTypeMapper.GetAll();
+    const types = AccessibilityTypeMapper.GetAll();
 
     types.forEach((t) => {
       const option = document.createElement("option");
       option.value = t.toString();
-      option.textContent = AccessabilityTypeMapper.MapToText(t);
+      option.textContent = AccessibilityTypeMapper.MapToText(t);
       designerSelect.appendChild(option);
     });
 
-    addAccessabilityChangeEvent(designerSelect);
+    addAccessibilityChangeEvent(designerSelect);
 
     vscode.postMessage({
-      type: Routes.GetAccessability,
+      type: Routes.GetAccessibility,
     });
   }
 
@@ -159,11 +159,11 @@ import { addAccessabilityChangeEvent } from "./events/accessability/updateAccess
         filterEntries(message.ids);
         return;
 
-      case Routes.UpdateAccessability:
+      case Routes.UpdateAccessibility:
         updateAccessability(message.eventArgs);
         return;
 
-      case Routes.GetAccessability:
+      case Routes.GetAccessibility:
         getAccessability(message.eventArgs);
         return;
     }
@@ -180,12 +180,12 @@ import { addAccessabilityChangeEvent } from "./events/accessability/updateAccess
     }
   }
 
-  function updateAccessability(args: UpdateAccessabilityEventArgs) {
-    designerSelect.value = args.accessabilityType.toString();
+  function updateAccessability(args: UpdateAccessibilityEventArgs) {
+    designerSelect.value = args.accessibilityType.toString();
   }
 
-  function getAccessability(args: GetAccessabilityEventArgs) {
-    designerSelect.value = args.accessabilityType.toString();
+  function getAccessability(args: GetAccessibilityEventArgs) {
+    designerSelect.value = args.accessibilityType.toString();
   }
 
   function filterEntries(ids: string[]) {

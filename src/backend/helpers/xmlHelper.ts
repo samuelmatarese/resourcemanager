@@ -2,8 +2,8 @@ import { XMLSerializer, DOMParser } from "xmldom";
 import type { TextDocument } from "vscode";
 import { UpdateEntryEventArgs } from "../../webview/events/entry/updateEntryEventArgs";
 import { CellType } from "../../webview/cellType";
-import { AccessabilityType } from "../../webview/events/accessability/accessabilityType";
-import { AccessabilityTypeMapper } from "../designer/accessabilityTypeMapper";
+import { AccessibilityType } from "../../webview/events/accessibility/accessibilityType";
+import { AccessibilityTypeMapper } from "../designer/accessibilityTypeMapper";
 
 export class XmlHelper {
   public static findEntryById(id: string, entries: HTMLCollectionOf<HTMLDataElement>): HTMLDataElement {
@@ -86,7 +86,7 @@ export class XmlHelper {
     return ids;
   }
 
-  public static getDesignerText(document: TextDocument, accessabilityType: AccessabilityType) {
+  public static getDesignerText(document: TextDocument, accessabilityType: AccessibilityType) {
     const xmlDoc = this.getDocumentAsXml(document);
     let entries = Array.from(xmlDoc.getElementsByTagName("data"));
     let text: string[] = ["\n"];
@@ -101,7 +101,7 @@ export class XmlHelper {
         text.push(`\t\t/// </summary>`);
       }
 
-      text.push(`\t\t${AccessabilityTypeMapper.MapToText(accessabilityType)} static string ${name} => ResourceManager.GetString("${name}", resourceCulture);`);
+      text.push(`\t\t${AccessibilityTypeMapper.MapToText(accessabilityType)} static string ${name} => ResourceManager.GetString("${name}", resourceCulture);`);
       text.push("");
     });
 
@@ -127,7 +127,7 @@ export class XmlHelper {
     return serializer.serializeToString(xmlDoc);
   }
 
-  public static checkAccessability(document: TextDocument): AccessabilityType | null {
+  public static checkAccessability(document: TextDocument): AccessibilityType | null {
     const xmlDoc = this.getDocumentAsXml(document);
     const nodes = xmlDoc.getElementsByTagName("accessability");
 
@@ -135,10 +135,10 @@ export class XmlHelper {
       return null;
     }
 
-    return AccessabilityTypeMapper.MapToType(nodes[0].textContent);
+    return AccessibilityTypeMapper.MapToType(nodes[0].textContent);
   }
 
-  public static createAccessability(document: string, type: AccessabilityType): string {
+  public static createAccessability(document: string, type: AccessibilityType): string {
     var parser = new DOMParser();
 
     const xmlDoc = parser.parseFromString(document);
@@ -146,11 +146,11 @@ export class XmlHelper {
 
     if (nodes.length === 0 || !nodes[0].textContent) {
       let node = xmlDoc.createElement("accessability");
-      node.textContent = AccessabilityTypeMapper.MapToText(type);
+      node.textContent = AccessibilityTypeMapper.MapToText(type);
       const root = xmlDoc.documentElement;
       root.insertBefore(node, root.firstChild);
     } else {
-      nodes[0].textContent = AccessabilityTypeMapper.MapToText(type);
+      nodes[0].textContent = AccessibilityTypeMapper.MapToText(type);
     }
 
     const serializer = new XMLSerializer();

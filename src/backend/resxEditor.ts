@@ -6,9 +6,9 @@ import { XmlHelper } from "./helpers/xmlHelper";
 import { Routes } from "../webview/constants/vscodeRoutes";
 import { SearchbarInputEventArgs } from "../webview/events/searchbar/searchbarInputEventArgs";
 import { DesignerHelper } from "./helpers/designerHelper";
-import { AccessabilityType } from "../webview/events/accessability/accessabilityType";
-import { UpdateAccessabilityEventArgs } from "../webview/events/accessability/updateAccessabilityEventArgs";
-import { GetAccessabilityEventArgs } from "../webview/events/accessability/getAccessabilityEventArgs";
+import { AccessibilityType } from "../webview/events/accessibility/accessibilityType";
+import { UpdateAccessibilityEventArgs } from "../webview/events/accessibility/updateAccessibilityEventArgs";
+import { GetAccessibilityEventArgs } from "../webview/events/accessibility/getAccessibilityEventArgs";
 
 export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
   private _updateWebViewType = UpdateType.None;
@@ -36,7 +36,7 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
       const accessability = XmlHelper.checkAccessability(document);
 
       if (accessability === null) {
-        updatedDoc = XmlHelper.createAccessability(updatedDoc, AccessabilityType.Internal);
+        updatedDoc = XmlHelper.createAccessability(updatedDoc, AccessibilityType.Internal);
       }
 
       const edit = new vscode.WorkspaceEdit();
@@ -71,16 +71,16 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
       });
     }
 
-    function updateAccessability(args: UpdateAccessabilityEventArgs) {
+    function updateAccessibility(args: UpdateAccessibilityEventArgs) {
       webviewPanel.webview.postMessage({
-        type: Routes.UpdateAccessability,
+        type: Routes.UpdateAccessibility,
         eventArgs: args,
       });
     }
 
-    function getAccessability(args: GetAccessabilityEventArgs) {
+    function getAccessibility(args: GetAccessibilityEventArgs) {
       webviewPanel.webview.postMessage({
-        type: Routes.GetAccessability,
+        type: Routes.GetAccessibility,
         eventArgs: args,
       });
     }
@@ -136,17 +136,17 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
           filterEntries(ids);
           return;
 
-        case Routes.UpdateAccessability:
-          await this.updateAccessability(document, e.eventArgs);
-          updateAccessability(e.eventArgs);
+        case Routes.UpdateAccessibility:
+          await this.updateAccessibility(document, e.eventArgs);
+          updateAccessibility(e.eventArgs);
           return;
 
-        case Routes.GetAccessability:
-          const accessability = this.getAccessability(document);
-          const args: GetAccessabilityEventArgs = {
-            accessabilityType: accessability,
+        case Routes.GetAccessibility:
+          const accessibility = this.getAccessibility(document);
+          const args: GetAccessibilityEventArgs = {
+            accessibilityType: accessibility,
           };
-          getAccessability(args);
+          getAccessibility(args);
           return;
       }
     });
@@ -200,24 +200,24 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
     }
   }
 
-  private async updateAccessability(document: vscode.TextDocument, args: UpdateAccessabilityEventArgs) {
+  private async updateAccessibility(document: vscode.TextDocument, args: UpdateAccessibilityEventArgs) {
     const edit = new vscode.WorkspaceEdit();
-    const updatedDoc = XmlHelper.createAccessability(document.getText(), args.accessabilityType);
+    const updatedDoc = XmlHelper.createAccessability(document.getText(), args.accessibilityType);
     const fullRange = new vscode.Range(document.positionAt(0), document.positionAt(document.getText().length));
 
     edit.replace(document.uri, fullRange, updatedDoc);
     await vscode.workspace.applyEdit(edit);
   }
 
-  private getAccessability(document: vscode.TextDocument) {
-    const accessability = XmlHelper.checkAccessability(document);
+  private getAccessibility(document: vscode.TextDocument) {
+    const accessibility = XmlHelper.checkAccessability(document);
 
-    if (accessability === null || accessability === undefined) {
+    if (accessibility === null || accessibility === undefined) {
       vscode.window.showErrorMessage("file is not correctly formatted. Accessability is missing");
       throw new Error("file is not correctly formatted. Accessability is missing");
     }
 
-    return accessability;
+    return accessibility;
   }
 
   private async editEntry(document: vscode.TextDocument, args: UpdateEntryEventArgs) {
