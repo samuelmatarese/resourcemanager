@@ -10,7 +10,7 @@ export const addChangeEvent = (
   cellType: CellType,
   id: string
 ): void => {
-  element.addEventListener("change", (event) => {
+  element.addEventListener("input", (event) => {
     const newValue = (event.target as HTMLTextAreaElement).value;
     const eventArgs: UpdateEntryEventArgs = {
       id: id,
@@ -28,7 +28,7 @@ export const addChangeEvent = (
 export const removeChangeEvent = (element: HTMLTextAreaElement): void => {
   const handler = changeEventHandlers.get(element);
   if (handler) {
-    element.removeEventListener("change", handler);
+    element.removeEventListener("input", handler);
     changeEventHandlers.delete(element); // Aufräumen
   }
 };

@@ -146,13 +146,13 @@ import { addAccessibilityChangeEvent } from "./events/accessibility/updateAccess
     const message = event.data;
     switch (message.type) {
       case Routes.UpdateAllRoute:
-        const text = message.text;
-        updateContent(text);
-        vscode.setState({ text });
+        updateContent(message.text);
+        vscode.setState({ text: message.text});
         return;
 
       case Routes.UpdateSingleEntryRoute:
         updateSingleEntry(message.eventArgs);
+        vscode.setState({text: message.text});
         return;
 
       case Routes.SearchRoute:
@@ -192,7 +192,9 @@ import { addAccessibilityChangeEvent } from "./events/accessibility/updateAccess
     let entries = Array.from(document.getElementsByClassName("table-row"));
 
     entries.forEach((entry) => {
-      if (!(entry instanceof HTMLElement)) { return; }
+      if (!(entry instanceof HTMLElement)) {
+        return;
+      }
 
       if (!ids.includes(entry.id)) {
         entry.classList.add("hidden");

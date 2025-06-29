@@ -63,6 +63,7 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
     function singleUpdateWebview(args: UpdateEntryEventArgs) {
       webviewPanel.webview.postMessage({
         type: Routes.UpdateSingleEntryRoute,
+        text: document.getText(),
         eventArgs: {
           id: args.id,
           newValue: args.newValue,
