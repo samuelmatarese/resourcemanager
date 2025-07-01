@@ -8,6 +8,7 @@ import { AccessibilityTypeMapper } from "../backend/designer/accessibilityTypeMa
 import { UpdateAccessibilityEventArgs } from "./events/accessibility/updateAccessibilityEventArgs";
 import { GetAccessibilityEventArgs } from "./events/accessibility/getAccessibilityEventArgs";
 import { addAccessibilityChangeEvent } from "./events/accessibility/updateAccessibilityEvent";
+import { addKeydownEvent } from "./events/entry/entryCellKeyDownEvent";
 
 // @ts-check
 // Script run within the webview itself.
@@ -62,9 +63,9 @@ import { addAccessibilityChangeEvent } from "./events/accessibility/updateAccess
 
       rowElement.id = id;
       rowElement.className = "table-row";
-      rowElement.appendChild(createEditableCell(id, name, CellType.Name));
-      rowElement.appendChild(createEditableCell(id, value, CellType.Value));
-      rowElement.appendChild(createEditableCell(id, comment, CellType.Comment));
+      rowElement.appendChild(createEditableCell(id, rows[i > 0 ? i - 1 : i].id, rows[i < rows.length - 1 ? i + 1 : i].id, name, CellType.Name));
+      rowElement.appendChild(createEditableCell(id, rows[i > 0 ? i - 1 : i].id, rows[i < rows.length - 1 ? i + 1 : i].id, value, CellType.Value));
+      rowElement.appendChild(createEditableCell(id, rows[i > 0 ? i - 1 : i].id, rows[i < rows.length - 1 ? i + 1 : i].id, comment, CellType.Comment));
       rowElement.appendChild(createDeleteButton(id));
       resourceTable?.appendChild(rowElement);
     }
@@ -89,7 +90,7 @@ import { addAccessibilityChangeEvent } from "./events/accessibility/updateAccess
     return button;
   }
 
-  function createEditableCell(id: string, textContent: string, cellType: CellType) {
+  function createEditableCell(id: string, beforeId: string, afterId: string, textContent: string, cellType: CellType) {
     const cell = document.createElement("td");
     const textarea = document.createElement("textarea");
 
@@ -98,6 +99,7 @@ import { addAccessibilityChangeEvent } from "./events/accessibility/updateAccess
     textarea.dataset.entryId = id;
     textarea.dataset.cellType = cellType.toString();
     addChangeEvent(textarea, cellType, id);
+    addKeydownEvent(textarea, beforeId, afterId, id, cellType);
 
     cell.appendChild(textarea);
     return cell;
