@@ -255,7 +255,7 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
             <body>
                 <div class="toolbar">
                   <select name="designer-accessability" class="designer-accessability"></select>
-                  <input class="searchbar" type="text" placeholder="search...">
+                  <input id="searchbar" class="searchbar" type="text" placeholder="search...">
                   <button class="create-button">New Entry</button>
                 </div>
                 <div class="table-wrapper">

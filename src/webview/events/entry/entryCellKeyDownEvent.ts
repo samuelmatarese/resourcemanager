@@ -36,6 +36,3 @@ export const removeKeyDownEvent = (element: HTMLTextAreaElement): void => {
     keydownEventHandlers.delete(element);
   }
 };
-
-//Ctrl + N => new Entry + focus
-//Ctrl + F => focus search

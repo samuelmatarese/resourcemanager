@@ -9,6 +9,7 @@ import { UpdateAccessibilityEventArgs } from "./events/accessibility/updateAcces
 import { GetAccessibilityEventArgs } from "./events/accessibility/getAccessibilityEventArgs";
 import { addAccessibilityChangeEvent } from "./events/accessibility/updateAccessibilityEvent";
 import { addKeydownEvent } from "./events/entry/entryCellKeyDownEvent";
+import { addGlobalKeydownEvent } from "./events/window/globalKeydownEvent";
 
 // @ts-check
 // Script run within the webview itself.
@@ -17,6 +18,7 @@ import { addKeydownEvent } from "./events/entry/entryCellKeyDownEvent";
   const addButton = document.getElementsByClassName("create-button")[0];
   const searchbar = document.getElementsByClassName("searchbar")[0] as HTMLInputElement;
   const designerSelect = document.getElementsByClassName("designer-accessability")[0] as HTMLSelectElement;
+  addGlobalKeydownEvent();
 
   if (addButton === null) {
     throw new Error("addbutton is null");
