@@ -29,6 +29,6 @@ export const removeChangeEvent = (element: HTMLTextAreaElement): void => {
   const handler = changeEventHandlers.get(element);
   if (handler) {
     element.removeEventListener("input", handler);
-    changeEventHandlers.delete(element); // Aufräumen
+    changeEventHandlers.delete(element);
   }
 };

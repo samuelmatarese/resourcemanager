@@ -8,6 +8,8 @@ import { AccessibilityTypeMapper } from "../backend/designer/accessibilityTypeMa
 import { UpdateAccessibilityEventArgs } from "./events/accessibility/updateAccessibilityEventArgs";
 import { GetAccessibilityEventArgs } from "./events/accessibility/getAccessibilityEventArgs";
 import { addAccessibilityChangeEvent } from "./events/accessibility/updateAccessibilityEvent";
+import { addKeydownEvent } from "./events/entry/entryCellKeyDownEvent";
+import { addGlobalKeydownEvent } from "./events/window/globalKeydownEvent";
 
 // @ts-check
 // Script run within the webview itself.
@@ -16,6 +18,7 @@ import { addAccessibilityChangeEvent } from "./events/accessibility/updateAccess
   const addButton = document.getElementsByClassName("create-button")[0];
   const searchbar = document.getElementsByClassName("searchbar")[0] as HTMLInputElement;
   const designerSelect = document.getElementsByClassName("designer-accessability")[0] as HTMLSelectElement;
+  addGlobalKeydownEvent();
 
   if (addButton === null) {
     throw new Error("addbutton is null");
@@ -62,9 +65,9 @@ import { addAccessibilityChangeEvent } from "./events/accessibility/updateAccess
 
       rowElement.id = id;
       rowElement.className = "table-row";
-      rowElement.appendChild(createEditableCell(id, name, CellType.Name));
-      rowElement.appendChild(createEditableCell(id, value, CellType.Value));
-      rowElement.appendChild(createEditableCell(id, comment, CellType.Comment));
+      rowElement.appendChild(createEditableCell(id, rows[i > 0 ? i - 1 : i].id, rows[i < rows.length - 1 ? i + 1 : i].id, name, CellType.Name));
+      rowElement.appendChild(createEditableCell(id, rows[i > 0 ? i - 1 : i].id, rows[i < rows.length - 1 ? i + 1 : i].id, value, CellType.Value));
+      rowElement.appendChild(createEditableCell(id, rows[i > 0 ? i - 1 : i].id, rows[i < rows.length - 1 ? i + 1 : i].id, comment, CellType.Comment));
       rowElement.appendChild(createDeleteButton(id));
       resourceTable?.appendChild(rowElement);
     }
@@ -89,7 +92,7 @@ import { addAccessibilityChangeEvent } from "./events/accessibility/updateAccess
     return button;
   }
 
-  function createEditableCell(id: string, textContent: string, cellType: CellType) {
+  function createEditableCell(id: string, beforeId: string, afterId: string, textContent: string, cellType: CellType) {
     const cell = document.createElement("td");
     const textarea = document.createElement("textarea");
 
@@ -98,6 +101,7 @@ import { addAccessibilityChangeEvent } from "./events/accessibility/updateAccess
     textarea.dataset.entryId = id;
     textarea.dataset.cellType = cellType.toString();
     addChangeEvent(textarea, cellType, id);
+    addKeydownEvent(textarea, beforeId, afterId, id, cellType);
 
     cell.appendChild(textarea);
     return cell;
@@ -147,12 +151,12 @@ import { addAccessibilityChangeEvent } from "./events/accessibility/updateAccess
     switch (message.type) {
       case Routes.UpdateAllRoute:
         updateContent(message.text);
-        vscode.setState({ text: message.text});
+        vscode.setState({ text: message.text });
         return;
 
       case Routes.UpdateSingleEntryRoute:
         updateSingleEntry(message.eventArgs);
-        vscode.setState({text: message.text});
+        vscode.setState({ text: message.text });
         return;
 
       case Routes.SearchRoute:
@@ -166,6 +170,11 @@ import { addAccessibilityChangeEvent } from "./events/accessibility/updateAccess
       case Routes.GetAccessibility:
         getAccessability(message.eventArgs);
         return;
+
+      case Routes.AddEntry:
+        updateContent(message.text);
+        vscode.setState({ text: message.text });
+        focusElement(message.id, CellType.Name);
     }
   });
 
@@ -186,6 +195,12 @@ import { addAccessibilityChangeEvent } from "./events/accessibility/updateAccess
 
   function getAccessability(args: GetAccessibilityEventArgs) {
     designerSelect.value = args.accessibilityType.toString();
+  }
+
+  function focusElement(id: string, cellType: CellType){
+    const row = document.getElementById(id);
+    const cell = row?.querySelector(`textarea[data-cell-type="${cellType.toString()}"]`) as HTMLTextAreaElement;
+    cell?.focus();
   }
 
   function filterEntries(ids: string[]) {

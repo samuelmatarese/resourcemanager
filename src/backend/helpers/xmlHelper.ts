@@ -157,8 +157,8 @@ export class XmlHelper {
     return serializer.serializeToString(xmlDoc);
   }
 
-  public static generateFormattedDataXml(name: string = "new_entry", value: string = "", comment: string = ""): string {
-    return `\t<data id="${crypto.randomUUID()}" name="${name}" xml:space="preserve">\n\t\t<value>${value}</value>\n\t\t<comment>${comment}</comment>\n\t</data>`;
+  public static generateFormattedDataXml(id: string, name: string = "new_entry", value: string = "", comment: string = ""): string {
+    return `\t<data id="${id}" name="${name}" xml:space="preserve">\n\t\t<value>${value}</value>\n\t\t<comment>${comment}</comment>\n\t</data>`;
   }
 
   private static getDocumentAsXml(document: TextDocument): XMLDocument {
