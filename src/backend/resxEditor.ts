@@ -72,6 +72,14 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
       });
     }
 
+    function addEntry(id: string) {
+      webviewPanel.webview.postMessage({
+        type: Routes.AddEntry,
+        id: id,
+        text: document.getText(),
+      });
+    }
+
     function updateAccessibility(args: UpdateAccessibilityEventArgs) {
       webviewPanel.webview.postMessage({
         type: Routes.UpdateAccessibility,
@@ -118,8 +126,8 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
     webviewPanel.webview.onDidReceiveMessage(async (e) => {
       switch (e.type) {
         case Routes.AddEntry:
-          this._updateWebViewType = UpdateType.Full;
-          await this.addEntry(document);
+          const id = await this.addEntry(document);
+          addEntry(id);
           return;
 
         case Routes.EditEntry:
@@ -153,8 +161,8 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
     });
   }
 
-  private async addEntry(document: vscode.TextDocument) {
-    await this.insertDefaultResource(document);
+  private async addEntry(document: vscode.TextDocument): Promise<string> {
+    return await this.insertDefaultResource(document);
   }
 
   private async deleteEntry(document: vscode.TextDocument, id: string) {
@@ -165,19 +173,21 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
     return XmlHelper.filterEntriesBySearchText(document, args.searchText);
   }
 
-  private async insertDefaultResource(document: vscode.TextDocument) {
+  private async insertDefaultResource(document: vscode.TextDocument): Promise<string> {
     const edit = new vscode.WorkspaceEdit();
     const xmlText = document.getText();
     const rootCloseTag = "</root>";
     const insertOffset = xmlText.lastIndexOf(rootCloseTag);
+    const id = crypto.randomUUID();
 
     if (insertOffset === -1) {
       vscode.window.showErrorMessage("No  </root>-Tag found.");
-      return;
+      throw new Error("No  </root>-Tag found.");
     }
 
-    edit.insert(document.uri, document.positionAt(insertOffset), XmlHelper.generateFormattedDataXml() + "\n");
+    edit.insert(document.uri, document.positionAt(insertOffset), XmlHelper.generateFormattedDataXml(id) + "\n");
     await vscode.workspace.applyEdit(edit);
+    return id;
   }
 
   private async removeEntry(document: vscode.TextDocument, id: string) {
@@ -255,7 +265,7 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
             <body>
                 <div class="toolbar">
                   <select name="designer-accessability" class="designer-accessability"></select>
-                  <input class="searchbar" type="text" placeholder="search...">
+                  <input id="searchbar" class="searchbar" type="text" placeholder="search...">
                   <button class="create-button">New Entry</button>
                 </div>
                 <div class="table-wrapper">
