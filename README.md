@@ -24,12 +24,22 @@ The toolbar also includes a search bar, allowing you to quickly find specific en
 
 ![Searchbar](./readmeAssets/filter.png)
 
+**Use Shortcuts for efficiency**
+
+The following Shortcuts currently exist:
+
+Add Entry => Ctrl + Space
+Delete Entry => Ctrl + d
+Move between Entries => Ctrl + MouseUp/MouseDown
+Focus Searchbar => Ctrl + f
+
 
 ## Roadmap
 
-- [ ] Shortcuts
+- [x] Shortcuts
 - [ ] Better error handling
 - [ ] Multilanguage support
+- [ ] Option to show file in text editor mode
 
 
 ## Known Issues

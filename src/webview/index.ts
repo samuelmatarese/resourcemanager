@@ -151,12 +151,12 @@ import { addGlobalKeydownEvent } from "./events/window/globalKeydownEvent";
     switch (message.type) {
       case Routes.UpdateAllRoute:
         updateContent(message.text);
-        vscode.setState({ text: message.text});
+        vscode.setState({ text: message.text });
         return;
 
       case Routes.UpdateSingleEntryRoute:
         updateSingleEntry(message.eventArgs);
-        vscode.setState({text: message.text});
+        vscode.setState({ text: message.text });
         return;
 
       case Routes.SearchRoute:
@@ -170,6 +170,11 @@ import { addGlobalKeydownEvent } from "./events/window/globalKeydownEvent";
       case Routes.GetAccessibility:
         getAccessability(message.eventArgs);
         return;
+
+      case Routes.AddEntry:
+        updateContent(message.text);
+        vscode.setState({ text: message.text });
+        focusElement(message.id, CellType.Name);
     }
   });
 
@@ -190,6 +195,12 @@ import { addGlobalKeydownEvent } from "./events/window/globalKeydownEvent";
 
   function getAccessability(args: GetAccessibilityEventArgs) {
     designerSelect.value = args.accessibilityType.toString();
+  }
+
+  function focusElement(id: string, cellType: CellType){
+    const row = document.getElementById(id);
+    const cell = row?.querySelector(`textarea[data-cell-type="${cellType.toString()}"]`) as HTMLTextAreaElement;
+    cell?.focus();
   }
 
   function filterEntries(ids: string[]) {
