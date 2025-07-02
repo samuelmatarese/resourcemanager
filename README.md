@@ -28,9 +28,9 @@ The toolbar also includes a search bar, allowing you to quickly find specific en
 
 The following Shortcuts currently exist:
 
-Add Entry => Ctrl + Space
-Delete Entry => Ctrl + d
-Move between Entries => Ctrl + MouseUp/MouseDown
+Add Entry => Ctrl + Space <br>
+Delete Entry => Ctrl + d <br>
+Move between Entries => Ctrl + MouseUp/MouseDown <br>
 Focus Searchbar => Ctrl + f
 
 
