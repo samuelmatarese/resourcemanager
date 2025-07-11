@@ -16,23 +16,39 @@ export class DesignerHelper {
       let fileContent = this.GenerateDefaultText(this.deriveNamespace(document), path.basename(document.fileName, path.extname(document.fileName)), accessability ?? AccessibilityType.Internal);
       fileContent = fileContent + XmlHelper.getDesignerText(document, accessability ?? AccessibilityType.Internal);
       fs.writeFile(name, fileContent, () => {});
-    }else{
+    } else {
       fs.unlink(name, () => {});
     }
   }
 
   private static deriveNamespace(document: TextDocument): string {
-    const workspaceFolder = vscode.workspace.getWorkspaceFolder(document.uri);
+    const projectRoot = this.findProjectRoot(path.dirname(document.fileName));
 
-    if (!workspaceFolder) {
+    if (!projectRoot) {
       return "DefaultNamespace";
     }
 
-    const relativePath = path.relative(workspaceFolder.uri.fsPath, path.dirname(document.fileName));
+    const relativePath = path.relative(projectRoot, path.dirname(document.fileName));
     const namespaceParts = relativePath.split(path.sep).filter((part) => part && /^[a-zA-Z0-9_]+$/.test(part));
-    const projectName = path.basename(workspaceFolder.uri.fsPath);
+    const projectName = path.basename(projectRoot);
 
     return [projectName, ...namespaceParts].join(".");
+  }
+
+  private static findProjectRoot(startPath: string): string | null {
+    let current = startPath;
+    while (true) {
+      const csprojFiles = fs.readdirSync(current).filter((file) => file.endsWith(".csproj"));
+      if (csprojFiles.length > 0) {
+        return current;
+      }
+
+      const parent = path.dirname(current);
+      if (parent === current) {
+        return null;
+      }
+      current = parent;
+    }
   }
 
   private static GenerateDefaultText(namespace: string, fileName: string, accessabilityType: AccessibilityType) {

@@ -2,6 +2,12 @@
 
 All important changes to the project are documented in this changelog.  
 
+## 1.0.1 - 11.07.2025
+
+### Fixed
+- namespace bug when creating designerfile
+
+
 ## 1.0.0 - 02.07.2025
 
 ### Added
