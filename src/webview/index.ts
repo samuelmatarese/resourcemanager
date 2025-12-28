@@ -1,7 +1,7 @@
 import { CellType } from "./cellType";
 import { UpdateEntryEventArgs } from "./events/entry/updateEntryEventArgs";
 import { vscode } from "./constants/constants";
-import { Routes } from "./constants/vscodeRoutes";
+import { Routes } from "../shared/vscodeRoutes";
 import { addChangeEvent, removeChangeEvent } from "./events/entry/entryCellChangeEvent";
 import { addInputEvent } from "./events/searchbar/searchbarInputEvent";
 import { AccessibilityTypeMapper } from "../backend/designer/accessibilityTypeMapper";
@@ -10,6 +10,7 @@ import { GetAccessibilityEventArgs } from "./events/accessibility/getAccessibili
 import { addAccessibilityChangeEvent } from "./events/accessibility/updateAccessibilityEvent";
 import { addKeydownEvent } from "./events/entry/entryCellKeyDownEvent";
 import { addGlobalKeydownEvent } from "./events/window/globalKeydownEvent";
+import { DeleteEntryEventArgs } from "./events/entry/deleteEntryEventArgs";
 
 // @ts-check
 // Script run within the webview itself.
@@ -76,6 +77,9 @@ import { addGlobalKeydownEvent } from "./events/window/globalKeydownEvent";
   function createDeleteButton(id: string) {
     const button = document.createElement("button");
     const icon = document.createElement("span");
+    const args: DeleteEntryEventArgs = {
+      id: id
+    }
 
     icon.className = "material-symbols-outlined";
     icon.textContent = "X";
@@ -84,7 +88,7 @@ import { addGlobalKeydownEvent } from "./events/window/globalKeydownEvent";
 
     button.addEventListener("click", () => {
       vscode.postMessage({
-        id: id,
+        eventArgs: args,
         type: Routes.DeleteEntry,
       });
     });

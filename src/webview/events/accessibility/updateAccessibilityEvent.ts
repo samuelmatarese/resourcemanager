@@ -1,7 +1,7 @@
 import { UpdateAccessibilityEventArgs } from "./updateAccessibilityEventArgs";
 import { vscode } from "../../constants/constants";
 import { AccessibilityTypeMapper } from "../../../backend/designer/accessibilityTypeMapper";
-import { Routes } from "../../constants/vscodeRoutes";
+import { Routes } from "../../../shared/vscodeRoutes";
 
 export const changeEventHandlers = new Map<HTMLSelectElement, EventListener>();
 

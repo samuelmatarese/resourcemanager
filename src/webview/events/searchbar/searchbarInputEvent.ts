@@ -1,6 +1,6 @@
 import { vscode } from "../../constants/constants";
 import { SearchbarInputEventArgs } from "./searchbarInputEventArgs";
-import { Routes } from "../../constants/vscodeRoutes";
+import { Routes } from "../../../shared/vscodeRoutes";
 
 export const inputEventHandlers = new Map<HTMLInputElement, EventListener>();
 

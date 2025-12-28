@@ -1,6 +1,6 @@
 import { CellType } from "../../cellType";
 import { vscode } from "../../constants/constants";
-import { Routes } from "../../constants/vscodeRoutes";
+import { Routes } from "../../../shared/vscodeRoutes";
 
 export const keydownEventHandlers = new Map<HTMLTextAreaElement, EventListener>();
 

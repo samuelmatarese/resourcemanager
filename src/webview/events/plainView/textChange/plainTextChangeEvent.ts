@@ -1,21 +1,16 @@
-import { UpdateEntryEventArgs } from "./updateEntryEventArgs";
-import { CellType } from "../../cellType";
-import { vscode } from "../../constants/constants";
-import { Routes } from "../../../shared/vscodeRoutes";
+import { UpdatePlainTextEventArgs } from "./updatePlainTextEventArgs";
+import { vscode } from "../../../constants/constants";
+import { Routes } from "../../../../shared/vscodeRoutes";
 
 export const changeEventHandlers = new Map<HTMLTextAreaElement, EventListener>();
 
-export const addChangeEvent = (
+export const addPlainTextChangeEvent = (
   element: HTMLTextAreaElement,
-  cellType: CellType,
-  id: string
 ): void => {
   element.addEventListener("input", (event) => {
     const newValue = (event.target as HTMLTextAreaElement).value;
-    const eventArgs: UpdateEntryEventArgs = {
-      id: id,
-      newValue: newValue,
-      cellType: cellType,
+    const eventArgs: UpdatePlainTextEventArgs = {
+      newValue: newValue
     };
 
     vscode.postMessage({
@@ -25,7 +20,7 @@ export const addChangeEvent = (
   });
 };
 
-export const removeChangeEvent = (element: HTMLTextAreaElement): void => {
+export const removePlainTextChangeEvent = (element: HTMLTextAreaElement): void => {
   const handler = changeEventHandlers.get(element);
   if (handler) {
     element.removeEventListener("input", handler);

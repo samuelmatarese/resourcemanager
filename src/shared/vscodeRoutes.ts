@@ -6,5 +6,6 @@ export class Routes {
   public static readonly GetAccessibility = "getAccessability";
   public static readonly DeleteEntry = "delete";
   public static readonly EditEntry = "editEntry";
+  public static readonly EditPlainText = "editPlainText";
   public static readonly AddEntry = "add";
 }
