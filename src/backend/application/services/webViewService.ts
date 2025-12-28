@@ -4,11 +4,11 @@ import { UpdateEntryEventArgs } from "../../../webview/events/entry/updateEntryE
 import { getNonce } from "../../util";
 import { ViewTypeMapper } from "../../helpers/view/viewMapper";
 import { ViewType } from "../../helpers/view/viewType";
+import { UpdateAccessibilityEventArgs } from "../../../webview/events/accessibility/updateAccessibilityEventArgs";
+import { GetAccessibilityEventArgs } from "../../../webview/events/accessibility/getAccessibilityEventArgs";
 
 export class WebViewService {
-  constructor(
-    private webviewPanel: vscode.WebviewPanel, 
-    private readonly context: vscode.ExtensionContext) {}
+  constructor(private webviewPanel: vscode.WebviewPanel, private readonly context: vscode.ExtensionContext) {}
 
   public AddEntry(id: string, document: vscode.TextDocument) {
     this.SetWebViewHtml(document);
@@ -40,10 +40,31 @@ export class WebViewService {
   }
 
   public SetWebViewHtml(document: vscode.TextDocument) {
-    this.webviewPanel.webview.html = this.getHtmlForWebview(this.webviewPanel.webview, document.getText());
+    this.webviewPanel.webview.html = this.GetHtmlForWebview(this.webviewPanel.webview, document.getText());
   }
 
-  private getHtmlForWebview(webview: vscode.Webview, documentText: string): string {
+  public UpdateAccessibility(args: UpdateAccessibilityEventArgs) {
+    this.webviewPanel.webview.postMessage({
+      type: Routes.UpdateAccessibility,
+      eventArgs: args,
+    });
+  }
+
+  public GetAccessibility(args: GetAccessibilityEventArgs) {
+    this.webviewPanel.webview.postMessage({
+      type: Routes.GetAccessibility,
+      eventArgs: args,
+    });
+  }
+
+  public FilterEntries(ids: string[]) {
+    this.webviewPanel.webview.postMessage({
+      type: Routes.SearchRoute,
+      ids: ids,
+    });
+  }
+
+  private GetHtmlForWebview(webview: vscode.Webview, documentText: string): string {
     const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, "out", "webview", "webview.js"));
     const styleResetUri = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, "media", "reset.css"));
     const styleVSCodeUri = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, "media", "vscode.css"));

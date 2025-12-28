@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { XmlHelper } from "../../helpers/xmlHelper";
 import { UpdateEntryEventArgs } from "../../../webview/events/entry/updateEntryEventArgs";
 import { DeleteEntryEventArgs } from "../../../webview/events/entry/deleteEntryEventArgs";
+import { SearchbarInputEventArgs } from "../../../webview/events/searchbar/searchbarInputEventArgs";
 
 export class EditorViewService {
   public static async AddEntry(document: vscode.TextDocument): Promise<string> {
@@ -52,5 +53,9 @@ export class EditorViewService {
     } else {
       vscode.window.showWarningMessage(`No entry with id="${args.id}" found.`);
     }
+  }
+
+  public static SearchEntries(document: vscode.TextDocument, args: SearchbarInputEventArgs): string[] {
+    return XmlHelper.filterEntriesBySearchText(document, args.searchText);
   }
 }

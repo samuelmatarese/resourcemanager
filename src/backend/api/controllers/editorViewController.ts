@@ -26,6 +26,11 @@ export class EditorViewController {
         await EditorViewService.DeleteEntry(document, args);
         this._webViewService.UpdateWebview(document);
         return;
+
+      case Routes.SearchRoute:
+        const ids = await EditorViewService.SearchEntries(document, args);
+        this._webViewService.FilterEntries(ids);
+        return;
     }
   }
 }
