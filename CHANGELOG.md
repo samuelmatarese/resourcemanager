@@ -2,6 +2,12 @@
 
 All important changes to the project are documented in this changelog.  
 
+## 1.0.2 - 28.12.2025
+
+### Fixed
+- updated all node packages to fix security vulnerabilities
+
+
 ## 1.0.1 - 11.07.2025
 
 ### Fixed

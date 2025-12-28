@@ -1,4 +1,4 @@
-import { XMLSerializer, DOMParser } from "xmldom";
+import { XMLSerializer, DOMParser } from "@xmldom/xmldom";
 import type { TextDocument } from "vscode";
 import { UpdateEntryEventArgs } from "../../webview/events/entry/updateEntryEventArgs";
 import { CellType } from "../../webview/cellType";

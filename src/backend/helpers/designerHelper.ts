@@ -3,7 +3,6 @@ import * as fs from "fs";
 import * as path from "path";
 import { XmlHelper } from "./xmlHelper";
 import { AccessibilityType } from "../../webview/events/accessibility/accessibilityType";
-import * as vscode from "vscode";
 import { AccessibilityTypeMapper } from "../designer/accessibilityTypeMapper";
 
 export class DesignerHelper {
