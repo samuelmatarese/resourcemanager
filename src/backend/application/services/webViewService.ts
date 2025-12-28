@@ -1,11 +1,11 @@
 import * as vscode from "vscode";
-import { Routes } from "../../../shared/vscodeRoutes";
-import { UpdateEntryEventArgs } from "../../../webview/events/entry/updateEntryEventArgs";
-import { getNonce } from "../../util";
-import { ViewTypeMapper } from "../../helpers/view/viewMapper";
-import { ViewType } from "../../helpers/view/viewType";
-import { UpdateAccessibilityEventArgs } from "../../../webview/events/accessibility/updateAccessibilityEventArgs";
-import { GetAccessibilityEventArgs } from "../../../webview/events/accessibility/getAccessibilityEventArgs";
+import { Routes } from "../../../shared/constants/vscodeRoutes";
+import { UpdateEntryEventArgs } from "../../../shared/eventArgs/entry/updateEntryEventArgs";
+import { getNonce } from "../helpers/util";
+import { ViewTypeMapper } from "../helpers/view/viewMapper";
+import { ViewType } from "../helpers/view/viewType";
+import { UpdateAccessibilityEventArgs } from "../../../shared/eventArgs/accessibility/updateAccessibilityEventArgs";
+import { GetAccessibilityEventArgs } from "../../../shared/eventArgs/accessibility/getAccessibilityEventArgs";
 
 export class WebViewService {
   constructor(private webviewPanel: vscode.WebviewPanel, private readonly context: vscode.ExtensionContext) {}

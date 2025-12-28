@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { Routes } from "../../../shared/vscodeRoutes";
+import { Routes } from "../../../shared/constants/vscodeRoutes";
 import { PlainViewService } from "../../application/services/plainViewService";
 
 export class PlainViewController{

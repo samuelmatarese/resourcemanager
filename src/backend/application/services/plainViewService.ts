@@ -1,4 +1,4 @@
-import { UpdatePlainTextEventArgs } from "../../../webview/events/plainView/textChange/updatePlainTextEventArgs";
+import { UpdatePlainTextEventArgs } from "../../../shared/eventArgs/plainView/updatePlainTextEventArgs";
 import * as vscode from "vscode";
 
 export class PlainViewService {

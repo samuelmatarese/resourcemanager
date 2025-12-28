@@ -1,5 +1,5 @@
-import { UpdateAccessibilityEventArgs } from "../../../webview/events/accessibility/updateAccessibilityEventArgs";
-import { XmlHelper } from "../../helpers/xmlHelper";
+import { UpdateAccessibilityEventArgs } from "../../../shared/eventArgs/accessibility/updateAccessibilityEventArgs";
+import { XmlHelper } from "../helpers/xmlHelper";
 import * as vscode from "vscode";
 
 export class AccessibilityService {

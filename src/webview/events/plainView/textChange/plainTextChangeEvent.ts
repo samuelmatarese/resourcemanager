@@ -1,6 +1,6 @@
-import { UpdatePlainTextEventArgs } from "./updatePlainTextEventArgs";
-import { vscode } from "../../../constants/constants";
-import { Routes } from "../../../../shared/vscodeRoutes";
+import { UpdatePlainTextEventArgs } from "../../../../shared/eventArgs/plainView/updatePlainTextEventArgs";
+import { vscode } from "../../../../shared/constants/constants";
+import { Routes } from "../../../../shared/constants/vscodeRoutes";
 
 export const changeEventHandlers = new Map<HTMLTextAreaElement, EventListener>();
 

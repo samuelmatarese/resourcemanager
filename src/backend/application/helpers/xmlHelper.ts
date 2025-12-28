@@ -1,9 +1,9 @@
 import { XMLSerializer, DOMParser } from "@xmldom/xmldom";
 import type { TextDocument } from "vscode";
-import { UpdateEntryEventArgs } from "../../webview/events/entry/updateEntryEventArgs";
-import { CellType } from "../../webview/cellType";
-import { AccessibilityType } from "../../webview/events/accessibility/accessibilityType";
-import { AccessibilityTypeMapper } from "../designer/accessibilityTypeMapper";
+import { UpdateEntryEventArgs } from "../../../shared/eventArgs/entry/updateEntryEventArgs";
+import { CellType } from "../../../shared/eventArgs/entry/cellType";
+import { AccessibilityType } from "../../../shared/eventArgs/accessibility/accessibilityType";
+import { AccessibilityTypeMapper } from "./accessibilityTypeMapper";
 
 export class XmlHelper {
   public static findEntryById(id: string, entries: HTMLCollectionOf<HTMLDataElement>): HTMLDataElement {

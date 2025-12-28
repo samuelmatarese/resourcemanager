@@ -1,6 +1,6 @@
-import { CellType } from "../../cellType";
-import { vscode } from "../../constants/constants";
-import { Routes } from "../../../shared/vscodeRoutes";
+import { CellType } from "../../../shared/eventArgs/entry/cellType";
+import { vscode } from "../../../shared/constants/constants";
+import { Routes } from "../../../shared/constants/vscodeRoutes";
 
 export const globalKeydownEventHandlers = new Map<Window, EventListener>();
 

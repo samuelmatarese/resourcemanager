@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { Routes } from "../../../shared/vscodeRoutes";
+import { Routes } from "../../../shared/constants/vscodeRoutes";
 import { EditorViewService } from "../../application/services/editorViewService";
 import { WebViewService } from "../../application/services/webViewService";
 

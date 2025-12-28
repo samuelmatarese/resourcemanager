@@ -1,4 +1,4 @@
-import { CellType } from "../../cellType";
+import { CellType } from "./cellType";
 
 export type UpdateEntryEventArgs = {
     id : string;

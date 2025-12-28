@@ -1,7 +1,7 @@
-import { UpdateEntryEventArgs } from "./updateEntryEventArgs";
-import { CellType } from "../../cellType";
-import { vscode } from "../../constants/constants";
-import { Routes } from "../../../shared/vscodeRoutes";
+import { UpdateEntryEventArgs } from "../../../shared/eventArgs/entry/updateEntryEventArgs";
+import { CellType } from "../../../shared/eventArgs/entry/cellType";
+import { vscode } from "../../../shared/constants/constants";
+import { Routes } from "../../../shared/constants/vscodeRoutes";
 
 export const changeEventHandlers = new Map<HTMLTextAreaElement, EventListener>();
 

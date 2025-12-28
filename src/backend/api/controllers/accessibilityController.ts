@@ -1,8 +1,8 @@
 import * as vscode from "vscode";
-import { Routes } from "../../../shared/vscodeRoutes";
+import { Routes } from "../../../shared/constants/vscodeRoutes";
 import { AccessibilityService } from "../../application/services/accessibilityService";
 import { WebViewService } from "../../application/services/webViewService";
-import { GetAccessibilityEventArgs } from "../../../webview/events/accessibility/getAccessibilityEventArgs";
+import { GetAccessibilityEventArgs } from "../../../shared/eventArgs/accessibility/getAccessibilityEventArgs";
 
 export class AccessibilityController {
   private _webViewService: WebViewService;

@@ -1,8 +1,8 @@
 import * as vscode from "vscode";
-import { XmlHelper } from "../../helpers/xmlHelper";
-import { UpdateEntryEventArgs } from "../../../webview/events/entry/updateEntryEventArgs";
-import { DeleteEntryEventArgs } from "../../../webview/events/entry/deleteEntryEventArgs";
-import { SearchbarInputEventArgs } from "../../../webview/events/searchbar/searchbarInputEventArgs";
+import { XmlHelper } from "../helpers/xmlHelper";
+import { UpdateEntryEventArgs } from "../../../shared/eventArgs/entry/updateEntryEventArgs";
+import { DeleteEntryEventArgs } from "../../../shared/eventArgs/entry/deleteEntryEventArgs";
+import { SearchbarInputEventArgs } from "../../../shared/eventArgs/searchbar/searchbarInputEventArgs";
 
 export class EditorViewService {
   public static async AddEntry(document: vscode.TextDocument): Promise<string> {

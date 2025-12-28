@@ -1,16 +1,16 @@
-import { CellType } from "./cellType";
-import { UpdateEntryEventArgs } from "./events/entry/updateEntryEventArgs";
-import { vscode } from "./constants/constants";
-import { Routes } from "../shared/vscodeRoutes";
+import { CellType } from "../shared/eventArgs/entry/cellType";
+import { UpdateEntryEventArgs } from "../shared/eventArgs/entry/updateEntryEventArgs";
+import { vscode } from "../shared/constants/constants";
+import { Routes } from "../shared/constants/vscodeRoutes";
 import { addChangeEvent, removeChangeEvent } from "./events/entry/entryCellChangeEvent";
 import { addInputEvent } from "./events/searchbar/searchbarInputEvent";
-import { AccessibilityTypeMapper } from "../backend/designer/accessibilityTypeMapper";
-import { UpdateAccessibilityEventArgs } from "./events/accessibility/updateAccessibilityEventArgs";
-import { GetAccessibilityEventArgs } from "./events/accessibility/getAccessibilityEventArgs";
+import { AccessibilityTypeMapper } from "../backend/application/helpers/accessibilityTypeMapper";
+import { UpdateAccessibilityEventArgs } from "../shared/eventArgs/accessibility/updateAccessibilityEventArgs";
+import { GetAccessibilityEventArgs } from "../shared/eventArgs/accessibility/getAccessibilityEventArgs";
 import { addAccessibilityChangeEvent } from "./events/accessibility/updateAccessibilityEvent";
 import { addKeydownEvent } from "./events/entry/entryCellKeyDownEvent";
 import { addGlobalKeydownEvent } from "./events/window/globalKeydownEvent";
-import { DeleteEntryEventArgs } from "./events/entry/deleteEntryEventArgs";
+import { DeleteEntryEventArgs } from "../shared/eventArgs/entry/deleteEntryEventArgs";
 
 // @ts-check
 // Script run within the webview itself.
@@ -43,7 +43,6 @@ import { DeleteEntryEventArgs } from "./events/entry/deleteEntryEventArgs";
   errorContainer.classList.add("hidden");
 
   function updateContent(text: string) {
-    console.log("update webview");
     const resourceTable = document.getElementById("resource-table");
     resetTable();
     createDesignerSelect();
