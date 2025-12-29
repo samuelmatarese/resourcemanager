@@ -2,35 +2,43 @@ import * as vscode from "vscode";
 import { Routes } from "../../../shared/constants/vscodeRoutes";
 import { EditorViewService } from "../../application/services/editorViewService";
 import { WebViewService } from "../../application/services/webViewService";
+import { RouteHandler } from "../route/routeHandler";
 
 export class EditorViewController {
   private _webViewService: WebViewService;
+  private _handlers: Record<string, RouteHandler> = {
+    [Routes.AddEntry]: this.HandleAddEntry.bind(this),
+    [Routes.EditEntry]: this.HandleEditEntry.bind(this),
+    [Routes.DeleteEntry]: this.HandleDeleteEntry.bind(this),
+    [Routes.SearchRoute]: this.HandleSearchEntry.bind(this),
+  };
 
   constructor(webViewPanel: vscode.WebviewPanel, context: vscode.ExtensionContext) {
     this._webViewService = new WebViewService(webViewPanel, context);
   }
 
-  public async MapEndpoints(route: string, document: vscode.TextDocument, args: any) {
-    switch (route) {
-      case Routes.AddEntry:
-        const id = await EditorViewService.AddEntry(document);
-        this._webViewService.AddEntry(id, document);
-        return;
+  public MapEndpoints()
+    : Record<string, RouteHandler> {
+    return this._handlers;
+  }
 
-      case Routes.EditEntry:
-        const updateArgs = await EditorViewService.EditEntry(document, args);
-        this._webViewService.SingleUpdateWebview(document, updateArgs);
-        return;
+  private async HandleAddEntry(document: vscode.TextDocument, args: any) {
+    const id = await EditorViewService.AddEntry(document);
+    this._webViewService.AddEntry(id, document);
+  }
 
-      case Routes.DeleteEntry:
-        await EditorViewService.DeleteEntry(document, args);
-        this._webViewService.UpdateWebview(document);
-        return;
+  private async HandleEditEntry(document: vscode.TextDocument, args: any) {
+    const updateArgs = await EditorViewService.EditEntry(document, args);
+    this._webViewService.SingleUpdateWebview(document, updateArgs);
+  }
 
-      case Routes.SearchRoute:
-        const ids = await EditorViewService.SearchEntries(document, args);
-        this._webViewService.FilterEntries(ids);
-        return;
-    }
+  private async HandleDeleteEntry(document: vscode.TextDocument, args: any) {
+    await EditorViewService.DeleteEntry(document, args);
+    this._webViewService.UpdateWebview(document);
+  }
+
+  private async HandleSearchEntry(document: vscode.TextDocument, args: any) {
+    const ids = await EditorViewService.SearchEntries(document, args);
+    this._webViewService.FilterEntries(ids);
   }
 }

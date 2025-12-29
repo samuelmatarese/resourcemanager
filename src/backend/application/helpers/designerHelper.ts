@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { XmlHelper } from "./xmlHelper";
 import { AccessibilityType } from "../../../shared/eventArgs/accessibility/accessibilityType";
-import { AccessibilityTypeMapper } from "./accessibilityTypeMapper";
+import { AccessibilityTypeMapper } from "../../../shared/eventArgs/accessibility/accessibilityTypeMapper";
 
 export class DesignerHelper {
   public static GenerateDesignerFile(document: TextDocument) {

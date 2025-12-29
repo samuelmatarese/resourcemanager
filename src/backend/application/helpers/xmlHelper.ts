@@ -3,7 +3,7 @@ import type { TextDocument } from "vscode";
 import { UpdateEntryEventArgs } from "../../../shared/eventArgs/entry/updateEntryEventArgs";
 import { CellType } from "../../../shared/eventArgs/entry/cellType";
 import { AccessibilityType } from "../../../shared/eventArgs/accessibility/accessibilityType";
-import { AccessibilityTypeMapper } from "./accessibilityTypeMapper";
+import { AccessibilityTypeMapper } from "../../../shared/eventArgs/accessibility/accessibilityTypeMapper";
 
 export class XmlHelper {
   public static findEntryById(id: string, entries: HTMLCollectionOf<HTMLDataElement>): HTMLDataElement {

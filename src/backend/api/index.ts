@@ -42,6 +42,11 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
     const editorViewController = new EditorViewController(webviewPanel, this.context);
     const accessibilityController = new AccessibilityController(webviewPanel, this.context);
 
+    const endpoints = {
+      ...editorViewController.MapEndpoints(),
+      ...accessibilityController.MapEndpoints(),
+    };
+
     webViewService.UpdateWebview(document);
     webviewPanel.webview.options = {
       enableScripts: true,
@@ -58,8 +63,14 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
     });
 
     webviewPanel.webview.onDidReceiveMessage(async (e) => {
-      await editorViewController.MapEndpoints(e.type, document, e.eventArgs);
-      await accessibilityController.MapEndpoints(e.type, document, e.eventArgs);
+      const handler = endpoints[e.type];
+
+      if (!handler) {
+        console.warn(`No endpoint registered for route: ${e.type}`);
+        return;
+      }
+
+      await handler(document, e.eventArgs);
     });
   }
 }
