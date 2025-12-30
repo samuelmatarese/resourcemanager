@@ -1,4 +1,4 @@
-import { AccessibilityType as AccessibilityType } from "../../webview/events/accessibility/accessibilityType";
+import { AccessibilityType as AccessibilityType } from "./accessibilityType";
 
 export class AccessibilityTypeMapper {
   public static MapToText(type: AccessibilityType): string {

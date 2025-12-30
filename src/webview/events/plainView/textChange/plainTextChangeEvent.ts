@@ -1,0 +1,29 @@
+import { UpdatePlainTextEventArgs } from "../../../../shared/eventArgs/plainView/updatePlainTextEventArgs";
+import { vscode } from "../../../../shared/constants/constants";
+import { Routes } from "../../../../shared/constants/vscodeRoutes";
+
+export const changeEventHandlers = new Map<HTMLTextAreaElement, EventListener>();
+
+export const addPlainTextChangeEvent = (
+  element: HTMLTextAreaElement,
+): void => {
+  element.addEventListener("input", (event) => {
+    const newValue = (event.target as HTMLTextAreaElement).value;
+    const eventArgs: UpdatePlainTextEventArgs = {
+      newValue: newValue
+    };
+
+    vscode.postMessage({
+      eventArgs: eventArgs,
+      type: Routes.EditPlainText,
+    });
+  });
+};
+
+export const removePlainTextChangeEvent = (element: HTMLTextAreaElement): void => {
+  const handler = changeEventHandlers.get(element);
+  if (handler) {
+    element.removeEventListener("input", handler);
+    changeEventHandlers.delete(element);
+  }
+};

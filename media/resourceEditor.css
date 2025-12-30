@@ -4,6 +4,15 @@
   overflow: hidden;
 }
 
+html {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  height: 100%;
+}
+
 .toolbar {
   width: 100%;
   display: flex;
@@ -11,13 +20,13 @@
   margin-bottom: 10px;
 }
 
-.create-button{
+.create-button {
   width: 25%;
   min-width: 100px;
 }
 
 .table-wrapper {
-  height: calc(100dvh - 50px);
+  height: calc(100dvh - 80px);
   overflow-y: visible;
 }
 
@@ -69,4 +78,23 @@
 
 .hidden {
   display: none;
+}
+
+.plain-body {
+  width: 100%;
+  height: calc(100dvh - 40px);
+  overflow: auto;
+  resize: none;
+}
+
+.bottom-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: end;
+}
+
+#change-view-type-button {
+  width: 100px;
+  margin-right: 20px;
 }

@@ -2,6 +2,16 @@
 
 All important changes to the project are documented in this changelog.  
 
+## 1.1.0 - in Development
+
+### Added
+- plain view
+- button to change between plain and editor view 
+- shortcut for changing between views (Ctrl + Enter)
+
+### Fixed
+- JS-Map source bug
+
 ## 1.0.2 - 28.12.2025
 
 ### Fixed

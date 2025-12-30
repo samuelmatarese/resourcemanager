@@ -8,7 +8,7 @@ esbuild
     outfile: "out/extension.js",
     platform: "node",
     target: ["node20"],
-    sourcemap: true,
+    sourcemap: false,
     minify: false,
     external: ["vscode"],
   })
@@ -21,7 +21,7 @@ esbuild
     outfile: "out/webview/webview.js",
     platform: "browser",
     target: ["es2022"],
-    sourcemap: true,
+    sourcemap: false,
     minify: false,
     define: {
       "process.env.NODE_ENV": '"production"',

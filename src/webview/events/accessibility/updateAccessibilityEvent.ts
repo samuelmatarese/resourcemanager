@@ -1,7 +1,7 @@
-import { UpdateAccessibilityEventArgs } from "./updateAccessibilityEventArgs";
-import { vscode } from "../../constants/constants";
-import { AccessibilityTypeMapper } from "../../../backend/designer/accessibilityTypeMapper";
-import { Routes } from "../../constants/vscodeRoutes";
+import { UpdateAccessibilityEventArgs } from "../../../shared/eventArgs/accessibility/updateAccessibilityEventArgs";
+import { vscode } from "../../../shared/constants/constants";
+import { AccessibilityTypeMapper } from "../../../shared/eventArgs/accessibility/accessibilityTypeMapper";
+import { Routes } from "../../../shared/constants/vscodeRoutes";
 
 export const changeEventHandlers = new Map<HTMLSelectElement, EventListener>();
 
