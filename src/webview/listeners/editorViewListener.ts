@@ -3,7 +3,7 @@ import { Routes } from "../../shared/constants/vscodeRoutes";
 import { vscode } from "../../shared/constants/constants";
 import { CellType } from "../../shared/eventArgs/entry/cellType";
 import { ReloadHelper } from "../helpers/reloadHelper";
-import { FocusCell } from "../components/tableCell";
+import { FocusCell, RemoveEntry } from "../components/tableCell";
 import { UpdateSingleEntry } from "../components/tableCell";
 import { FilterEntries } from "../components/entryTable";
 
@@ -11,6 +11,7 @@ export class EditorViewListener {
   private _handlers: Record<string, MessageHandler> = {
     [Routes.AddEntry]: this.HandleAddEntry.bind(this),
     [Routes.UpdateSingleEntryRoute]: this.HandleUpdateSingleEntry.bind(this),
+    [Routes.DeleteEntry]: this.HandleDeleteEntry.bind(this),
     [Routes.SearchRoute]: this.HandleFilterEntries.bind(this),
   };
 
@@ -26,6 +27,11 @@ export class EditorViewListener {
 
   private HandleUpdateSingleEntry(args: any) {
     UpdateSingleEntry(args.eventArgs);
+    vscode.setState({ text: args.text });
+  }
+
+  private HandleDeleteEntry(args: any) {
+    RemoveEntry(args.eventArgs);
     vscode.setState({ text: args.text });
   }
 

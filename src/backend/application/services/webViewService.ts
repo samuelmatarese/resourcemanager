@@ -8,6 +8,7 @@ import { UpdateAccessibilityEventArgs } from "../../../shared/eventArgs/accessib
 import { GetAccessibilityEventArgs } from "../../../shared/eventArgs/accessibility/getAccessibilityEventArgs";
 import { ViewTypeHelper } from "../../../shared/helpers/viewType/viewTypeHelper";
 import { UpdateViewTypeEventArgs } from "../../../shared/eventArgs/webView/updateViewTypeEventArgs";
+import { DeleteEntryEventArgs } from "../../../shared/eventArgs/entry/deleteEntryEventArgs";
 
 export class WebViewService {
   constructor(private webviewPanel: vscode.WebviewPanel, private readonly context: vscode.ExtensionContext) {}
@@ -21,10 +22,7 @@ export class WebViewService {
     });
   }
 
-  public UpdateWebview(
-    document: vscode.TextDocument, 
-    args: UpdateViewTypeEventArgs | undefined = undefined,
-    shouldRerender: boolean = true ) {
+  public UpdateWebview(document: vscode.TextDocument, args: UpdateViewTypeEventArgs | undefined = undefined, shouldRerender: boolean = true) {
     if (args?.ChangeViewType) {
       this.ChangeView();
     }
@@ -48,6 +46,14 @@ export class WebViewService {
         newValue: args.newValue,
         cellType: args.cellType,
       },
+    });
+  }
+
+  public DeleteEntry(document: vscode.TextDocument, args: DeleteEntryEventArgs) {
+    this.webviewPanel.webview.postMessage({
+      type: Routes.DeleteEntry,
+      text: document.getText(),
+      eventArgs: args,
     });
   }
 

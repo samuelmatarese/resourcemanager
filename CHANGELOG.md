@@ -11,6 +11,7 @@ All important changes to the project are documented in this changelog.
 
 ### Fixed
 - JS-Map source bug
+- scrolling to top when deleting entry
 
 ## 1.0.2 - 28.12.2025
 

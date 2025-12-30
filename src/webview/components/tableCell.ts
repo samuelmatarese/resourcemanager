@@ -2,6 +2,7 @@ import { addChangeEvent } from "../events/entry/entryCellChangeEvent";
 import { addKeydownEvent } from "../events/entry/entryCellKeyDownEvent";
 import { CellType } from "../../shared/eventArgs/entry/cellType";
 import { UpdateEntryEventArgs } from "../../shared/eventArgs/entry/updateEntryEventArgs";
+import { DeleteEntryEventArgs } from "../../shared/eventArgs/entry/deleteEntryEventArgs";
 
 export function CreateEditableCell(id: string, beforeId: string, afterId: string, textContent: string, cellType: CellType) {
   const cell = document.createElement("td");
@@ -27,6 +28,12 @@ export function UpdateSingleEntry(args: UpdateEntryEventArgs) {
     input.value = args.newValue.replaceAll(" ", "_");
     input.setSelectionRange(cursorPosition, cursorPosition);
   }
+}
+
+export function RemoveEntry(args: DeleteEntryEventArgs) {
+  const selector = `tr[id="${args.id}"]`;
+  const row = document.querySelector<HTMLTableRowElement>(selector);
+  row?.remove();
 }
 
 export function FocusCell(id: string, cellType: CellType) {
