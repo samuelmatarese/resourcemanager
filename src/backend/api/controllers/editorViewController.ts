@@ -33,7 +33,7 @@ export class EditorViewController {
 
   private async HandleDeleteEntry(document: vscode.TextDocument, args: any) {
     await EditorViewService.DeleteEntry(document, args);
-    this._webViewService.UpdateWebview(document);
+    this._webViewService.DeleteEntry(document, args);
   }
 
   private async HandleSearchEntry(document: vscode.TextDocument, args: any) {
