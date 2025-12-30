@@ -1,5 +1,6 @@
-import { ViewType } from "./viewType";
+import { ViewType } from "../../../../shared/helpers/viewType/viewType";
 import { Uri } from "vscode";
+import { ComponentIds } from "../../../../shared/constants/componentIds";
 
 export class ViewTypeMapper {
   public static MapToHtmlBody(type: ViewType, scriptUri: Uri, nonce: string, text: string): string {
@@ -14,8 +15,11 @@ export class ViewTypeMapper {
   private static GetPlainBody(nonce: string, scriptUri: Uri, text: string): string {
     return /* html */ `
             <body>
-                <textarea class="plain-body">${text}</textarea>
-                <script nonce="${nonce}" src="${scriptUri}"></script>
+              <textarea id="${ComponentIds.PlainTextArea}" class="plain-body">${text}</textarea>
+              <div class="bottom-bar">
+                <button id="${ComponentIds.ChangeViewTypeButton}">Table</button>
+              </div>
+              <script nonce="${nonce}" src="${scriptUri}"></script>
             </body>`;
   }
 
@@ -23,9 +27,9 @@ export class ViewTypeMapper {
     return /* html */ `
             <body>
                 <div class="toolbar">
-                  <select name="designer-accessability" class="designer-accessability"></select>
-                  <input id="searchbar" class="searchbar" type="text" placeholder="search...">
-                  <button class="create-button">New Entry</button>
+                  <select id="${ComponentIds.DesignerSelect}" name="designer-accessability" class="designer-accessability"></select>
+                  <input id="${ComponentIds.Searchbar}" class="searchbar" type="text" placeholder="search...">
+                  <button id="${ComponentIds.CreateEntryButton}" class="create-button">New Entry</button>
                 </div>
                 <div class="table-wrapper">
                   <table id="resource-table" class="resource-table">
@@ -35,6 +39,9 @@ export class ViewTypeMapper {
                           <th>Comment</th>
                       </tr>
                   </table>
+                </div>
+                <div class="bottom-bar">
+                  <button id="${ComponentIds.ChangeViewTypeButton}">XML</button>
                 </div>
                 <script nonce="${nonce}" src="${scriptUri}"></script>
             </body>`;

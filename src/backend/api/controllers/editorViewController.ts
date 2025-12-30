@@ -17,8 +17,7 @@ export class EditorViewController {
     this._webViewService = new WebViewService(webViewPanel, context);
   }
 
-  public MapEndpoints()
-    : Record<string, RouteHandler> {
+  public MapEndpoints(): Record<string, RouteHandler> {
     return this._handlers;
   }
 

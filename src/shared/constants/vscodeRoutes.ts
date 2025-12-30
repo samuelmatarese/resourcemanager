@@ -8,4 +8,5 @@ export class Routes {
   public static readonly EditEntry = "editEntry";
   public static readonly EditPlainText = "editPlainText";
   public static readonly AddEntry = "add";
+  public static readonly UpdateWebView = "updateWebView";
 }

@@ -3,9 +3,11 @@ import { Routes } from "../../../shared/constants/vscodeRoutes";
 import { UpdateEntryEventArgs } from "../../../shared/eventArgs/entry/updateEntryEventArgs";
 import { getNonce } from "../helpers/util";
 import { ViewTypeMapper } from "../helpers/view/viewMapper";
-import { ViewType } from "../helpers/view/viewType";
+import { ViewType } from "../../../shared/helpers/viewType/viewType";
 import { UpdateAccessibilityEventArgs } from "../../../shared/eventArgs/accessibility/updateAccessibilityEventArgs";
 import { GetAccessibilityEventArgs } from "../../../shared/eventArgs/accessibility/getAccessibilityEventArgs";
+import { ViewTypeHelper } from "../../../shared/helpers/viewType/viewTypeHelper";
+import { UpdateViewTypeEventArgs } from "../../../shared/eventArgs/webView/updateViewTypeEventArgs";
 
 export class WebViewService {
   constructor(private webviewPanel: vscode.WebviewPanel, private readonly context: vscode.ExtensionContext) {}
@@ -19,8 +21,18 @@ export class WebViewService {
     });
   }
 
-  public UpdateWebview(document: vscode.TextDocument) {
-    this.SetWebViewHtml(document);
+  public UpdateWebview(
+    document: vscode.TextDocument, 
+    args: UpdateViewTypeEventArgs | undefined = undefined,
+    shouldRerender: boolean = true ) {
+    if (args?.ChangeViewType) {
+      this.ChangeView();
+    }
+
+    if (shouldRerender) {
+      this.SetWebViewHtml(document);
+    }
+
     this.webviewPanel.webview.postMessage({
       type: Routes.UpdateAllRoute,
       text: document.getText(),
@@ -64,6 +76,16 @@ export class WebViewService {
     });
   }
 
+  private ChangeView() {
+    const currentViewType = ViewTypeHelper.GetViewType();
+
+    if (currentViewType == ViewType.Editor) {
+      ViewTypeHelper.SetViewType(ViewType.Plain);
+    } else if (currentViewType == ViewType.Plain) {
+      ViewTypeHelper.SetViewType(ViewType.Editor);
+    }
+  }
+
   private GetHtmlForWebview(webview: vscode.Webview, documentText: string): string {
     const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, "out", "webview", "webview.js"));
     const styleResetUri = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, "media", "reset.css"));
@@ -85,7 +107,7 @@ export class WebViewService {
   
                   <title>Resource Manager</title>
               </head>
-              ${ViewTypeMapper.MapToHtmlBody(ViewType.Editor, scriptUri, nonce, documentText)}
+              ${ViewTypeMapper.MapToHtmlBody(ViewTypeHelper.GetViewType(), scriptUri, nonce, documentText)}
               </html>`;
   }
 }

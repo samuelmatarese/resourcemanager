@@ -5,9 +5,15 @@ import { AccessibilityType } from "../../shared/eventArgs/accessibility/accessib
 import { WebViewService } from "../application/services/webViewService";
 import { EditorViewController } from "./controllers/editorViewController";
 import { AccessibilityController } from "./controllers/accessibilityController";
+import { WebViewController } from "./controllers/webViewController";
+import { ExtensionContextProvider } from "../../shared/helpers/extensionContextProvider";
+import { PlainViewController } from "./controllers/plainViewController";
+import { DOMParser } from "@xmldom/xmldom";
+import { ToastHelper } from "../../shared/helpers/toastHelper";
 
 export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
   public static register(context: vscode.ExtensionContext): vscode.Disposable {
+    ExtensionContextProvider.Set(context);
     const provider = new ResourceEditorProvider(context);
     const providerRegistration = vscode.window.registerCustomEditorProvider(ResourceEditorProvider.viewType, provider);
     return providerRegistration;
@@ -41,10 +47,14 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
     const webViewService = new WebViewService(webviewPanel, this.context);
     const editorViewController = new EditorViewController(webviewPanel, this.context);
     const accessibilityController = new AccessibilityController(webviewPanel, this.context);
+    const webViewController = new WebViewController(webviewPanel, this.context);
+    const plainViewController = new PlainViewController(webviewPanel, this.context);
 
     const endpoints = {
       ...editorViewController.MapEndpoints(),
       ...accessibilityController.MapEndpoints(),
+      ...webViewController.MapEndpoints(),
+      ...plainViewController.MapEndpoints(),
     };
 
     webViewService.UpdateWebview(document);
@@ -52,14 +62,44 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
       enableScripts: true,
     };
 
+    const willSaveSubscription = vscode.workspace.onWillSaveTextDocument(async (event) => {
+      const text = event.document.getText();
+      const parser = new DOMParser({
+        errorHandler: {
+          warning: (msg) => console.warn("XML Warning:", msg),
+          error: (msg) => {
+            throw new Error("Invalid XML: " + msg);
+          },
+          fatalError: (msg) => {
+            throw new Error("Invalid XML: " + msg);
+          },
+        },
+      });
+
+      try {
+        parser.parseFromString(text, "text/xml");
+      } catch (err: any) {
+        ToastHelper.ShowError(err.message);
+      }
+    });
+
     const saveSubscription = vscode.workspace.onDidSaveTextDocument((doc) => {
       if (doc.uri.toString() === document.uri.toString()) {
+        webViewService.UpdateWebview(document);
         DesignerHelper.GenerateDesignerFile(doc);
+      }
+    });
+
+    const changeViewState = webviewPanel.onDidChangeViewState((state) => {
+      if (state.webviewPanel.visible) {
+        webViewService.UpdateWebview(document);
       }
     });
 
     webviewPanel.onDidDispose(() => {
       saveSubscription.dispose();
+      changeViewState.dispose();
+      willSaveSubscription.dispose();
     });
 
     webviewPanel.webview.onDidReceiveMessage(async (e) => {

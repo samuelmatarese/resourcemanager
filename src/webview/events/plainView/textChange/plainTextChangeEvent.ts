@@ -15,7 +15,7 @@ export const addPlainTextChangeEvent = (
 
     vscode.postMessage({
       eventArgs: eventArgs,
-      type: Routes.EditEntry,
+      type: Routes.EditPlainText,
     });
   });
 };

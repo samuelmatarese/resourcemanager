@@ -1,13 +1,12 @@
 import * as vscode from "vscode";
 import { Routes } from "../../../shared/constants/vscodeRoutes";
-import { PlainViewService } from "../../application/services/plainViewService";
-import { RouteHandler } from "../route/routeHandler";
 import { WebViewService } from "../../application/services/webViewService";
+import { RouteHandler } from "../route/routeHandler";
 
-export class PlainViewController {
+export class WebViewController {
   private _webViewService: WebViewService;
   private _handlers: Record<string, RouteHandler> = {
-    [Routes.EditPlainText]: this.HandleEditPlainText.bind(this),
+    [Routes.UpdateWebView]: this.HandleUpdateWebView.bind(this),
   };
 
   constructor(webViewPanel: vscode.WebviewPanel, context: vscode.ExtensionContext) {
@@ -18,8 +17,7 @@ export class PlainViewController {
     return this._handlers;
   }
 
-  private async HandleEditPlainText(document: vscode.TextDocument, args: any) {
-    await PlainViewService.ChangeText(document, args);
-    this._webViewService.UpdateWebview(document, undefined, false);
+  private async HandleUpdateWebView(document: vscode.TextDocument, args: any) {
+    this._webViewService.UpdateWebview(document, args);
   }
 }
