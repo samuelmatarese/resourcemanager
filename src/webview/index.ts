@@ -1,7 +1,7 @@
 import { vscode } from "../shared/constants/constants";
 import { Routes } from "../shared/constants/vscodeRoutes";
 import { addInputEvent } from "./events/searchbar/searchbarInputEvent";
-import { addGlobalKeydownEvent } from "./events/window/globalKeydownEvent";
+import { addEditorGlobalKeydownEvent, addCommonGlobalKeydownEvent, removeKeyDownEvent } from "./events/window/globalKeydownEvent";
 import { ReloadHelper } from "./helpers/reloadHelper";
 import { AccessibilityListener } from "./listeners/accessibilityListener";
 import { CommonListener } from "./listeners/commonListener";
@@ -25,9 +25,11 @@ import { addPlainTextChangeEvent } from "./events/plainView/textChange/plainText
     ...accessibilityListener.MapMessageHandlers(),
   };
 
+  removeKeyDownEvent(window);
+  
   // Editormode
   if (addButton !== null && searchbar !== null) {
-    addGlobalKeydownEvent();
+    addEditorGlobalKeydownEvent();
 
     addButton.addEventListener("click", () => {
       vscode.postMessage({
@@ -43,6 +45,7 @@ import { addPlainTextChangeEvent } from "./events/plainView/textChange/plainText
     addPlainTextChangeEvent(textArea);
   }
 
+  addCommonGlobalKeydownEvent();
   AddChangeViewTypeEvent(viewTypeChangeButton);
 
   const errorContainer = document.createElement("div");

@@ -1,12 +1,10 @@
-import { CellType } from "../../../shared/eventArgs/entry/cellType";
+import { UpdateViewTypeEventArgs } from "../../../shared/eventArgs/webView/updateViewTypeEventArgs";
 import { vscode } from "../../../shared/constants/constants";
 import { Routes } from "../../../shared/constants/vscodeRoutes";
 
 export const globalKeydownEventHandlers = new Map<Window, EventListener>();
 
-export const addGlobalKeydownEvent = (): void => {
-  removeKeyDownEvent(window);
-
+export const addEditorGlobalKeydownEvent = (): void => {
   window.addEventListener("keydown", (event) => {
     if (event.ctrlKey && event.key === "f") {
       const searchbar = document.getElementById("searchbar");
@@ -16,6 +14,21 @@ export const addGlobalKeydownEvent = (): void => {
     if (event.ctrlKey && event.key === " ") {
       vscode.postMessage({
         type: Routes.AddEntry,
+      });
+    }
+  });
+};
+
+export const addCommonGlobalKeydownEvent = (): void => {
+  window.addEventListener("keydown", (event) => {
+    if (event.ctrlKey && event.key === "Enter") {
+      const args: UpdateViewTypeEventArgs = {
+        ChangeViewType: true,
+      };
+
+      vscode.postMessage({
+        eventArgs: args,
+        type: Routes.UpdateWebView,
       });
     }
   });
