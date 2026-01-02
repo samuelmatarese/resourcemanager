@@ -2,7 +2,7 @@
 
 All important changes to the project are documented in this changelog.  
 
-## 1.1.0 - in Development
+## 1.1.0 - 02.01.2026
 
 ### Added
 - plain view
