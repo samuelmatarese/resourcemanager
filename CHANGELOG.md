@@ -2,6 +2,14 @@
 
 All important changes to the project are documented in this changelog.  
 
+## 1.1.1 - 02.01.2026
+
+### Added
+- sorting and formatting of file when the file is saved
+
+### Fixed
+- prevent sorting every file and not exclusively .resx files
+
 ## 1.1.0 - 02.01.2026
 
 ### Added
