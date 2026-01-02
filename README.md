@@ -24,6 +24,12 @@ The toolbar also includes a search bar, allowing you to quickly find specific en
 
 ![Searchbar](./readmeAssets/filter.png)
 
+**Change to XML view**
+
+You can change the view to show the plain xml file and also apply changes.
+
+![Plain view](./readmeAssets/plain-view.png)
+
 **Use Shortcuts for efficiency**
 
 The following Shortcuts currently exist:
@@ -33,12 +39,6 @@ Delete Entry => Ctrl + d <br>
 Move between Entries => Ctrl + MouseUp/MouseDown <br>
 Focus Searchbar => Ctrl + f
 Change between views => Ctrl + Enter
-
-**Change to XML view**
-
-You can change the view to show the plain xml file and also apply changes.
-
-![Plain view](./readmeAssets/plain-view.png)
 
 
 ## Roadmap
