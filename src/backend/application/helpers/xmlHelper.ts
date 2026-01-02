@@ -4,6 +4,7 @@ import { UpdateEntryEventArgs } from "../../../shared/eventArgs/entry/updateEntr
 import { CellType } from "../../../shared/eventArgs/entry/cellType";
 import { AccessibilityType } from "../../../shared/eventArgs/accessibility/accessibilityType";
 import { AccessibilityTypeMapper } from "../../../shared/eventArgs/accessibility/accessibilityTypeMapper";
+import { ToastHelper } from "../../../shared/helpers/toastHelper";
 
 export class XmlHelper {
   public static findEntryById(id: string, entries: HTMLCollectionOf<HTMLDataElement>): HTMLDataElement {
@@ -129,13 +130,7 @@ export class XmlHelper {
 
   public static checkAccessability(document: TextDocument): AccessibilityType | null {
     const xmlDoc = this.getDocumentAsXml(document);
-    const nodes = xmlDoc.getElementsByTagName("accessability");
-
-    if (nodes.length === 0 || !nodes[0].textContent) {
-      return null;
-    }
-
-    return AccessibilityTypeMapper.MapToType(nodes[0].textContent);
+    return this.GetAccessibility(xmlDoc);
   }
 
   public static createAccessability(document: string, type: AccessibilityType): string {
@@ -157,12 +152,66 @@ export class XmlHelper {
     return serializer.serializeToString(xmlDoc);
   }
 
+  public static SortFile(document: string): string {
+    const parser = new DOMParser({
+      errorHandler: {
+        warning: (msg) => console.warn("XML Warning:", msg),
+        error: (msg) => {
+          throw new Error("Invalid XML: " + msg);
+        },
+        fatalError: (msg) => {
+          throw new Error("Invalid XML: " + msg);
+        },
+      },
+    });
+
+    try {
+      const xmlDoc = parser.parseFromString(document);
+      const accessibility = this.GetAccessibility(xmlDoc) ?? undefined;
+      let entries = Array.from(xmlDoc.getElementsByTagName("data"));
+      let sortedText = this.GetDefaultContent(false, accessibility);
+
+      let sortedEntries = entries.map((entry) => ({
+        name: entry.getAttribute("name") ?? "",
+        id: entry.getAttribute("id") ?? "",
+        value: entry.getElementsByTagName("value")[0]?.textContent ?? "",
+        comment: entry.getElementsByTagName("comment")[0]?.textContent ?? "",
+      }));
+
+      sortedEntries.sort((a, b) => a.name.localeCompare(b.name));
+
+      sortedEntries.forEach((e) => {
+        sortedText += this.generateFormattedDataXml(e.id, e.name, e.value, e.comment);
+      });
+
+      sortedText += "</root>";
+      return sortedText;
+    } catch (err: any) {
+      ToastHelper.ShowError(err.message);
+      return document;
+    }
+  }
+
   public static generateFormattedDataXml(id: string, name: string = "new_entry", value: string = "", comment: string = ""): string {
-    return `\t<data id="${id}" name="${name}" xml:space="preserve">\n\t\t<value>${value}</value>\n\t\t<comment>${comment}</comment>\n\t</data>`;
+    return `\t<data id="${id}" name="${name}" xml:space="preserve">\n\t\t<value>${value}</value>\n\t\t<comment>${comment}</comment>\n\t</data>\n`;
+  }
+
+  public static GetDefaultContent(appendRootEnd: boolean = true, accessibility: AccessibilityType = AccessibilityType.Internal): string {
+    return `<?xml version="1.0" encoding="utf-8"?>\n<root>\n\t<accessability>${AccessibilityTypeMapper.MapToText(accessibility)}</accessability>\n${appendRootEnd ? "</root>" : ""}`;
   }
 
   private static getDocumentAsXml(document: TextDocument): XMLDocument {
     var parser = new DOMParser();
     return parser.parseFromString(document.getText());
+  }
+
+  private static GetAccessibility(xmlDoc: XMLDocument): AccessibilityType | null {
+    const nodes = xmlDoc.getElementsByTagName("accessability");
+
+    if (nodes.length === 0 || !nodes[0].textContent) {
+      return null;
+    }
+
+    return AccessibilityTypeMapper.MapToType(nodes[0].textContent);
   }
 }

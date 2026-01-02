@@ -8,8 +8,6 @@ import { AccessibilityController } from "./controllers/accessibilityController";
 import { WebViewController } from "./controllers/webViewController";
 import { ExtensionContextProvider } from "../../shared/helpers/extensionContextProvider";
 import { PlainViewController } from "./controllers/plainViewController";
-import { DOMParser } from "@xmldom/xmldom";
-import { ToastHelper } from "../../shared/helpers/toastHelper";
 
 export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
   public static register(context: vscode.ExtensionContext): vscode.Disposable {
@@ -20,12 +18,15 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
   }
 
   private static readonly viewType = "resource.resx";
+  private _activeDocUri: vscode.Uri | undefined;
 
   constructor(private readonly context: vscode.ExtensionContext) {}
 
   public async resolveCustomTextEditor(document: vscode.TextDocument, webviewPanel: vscode.WebviewPanel, _token: vscode.CancellationToken): Promise<void> {
+    this._activeDocUri = document.uri;
+
     if (document.getText().trim().length === 0) {
-      const defaultContent = `<?xml version="1.0" encoding="utf-8"?>\n<root>\n\t<accessability>internal</accessability>\n</root>`;
+      const defaultContent = XmlHelper.GetDefaultContent();
       const edit = new vscode.WorkspaceEdit();
       edit.insert(document.uri, new vscode.Position(0, 0), defaultContent + "\n");
       await vscode.workspace.applyEdit(edit);
@@ -63,23 +64,15 @@ export class ResourceEditorProvider implements vscode.CustomTextEditorProvider {
     };
 
     const willSaveSubscription = vscode.workspace.onWillSaveTextDocument(async (event) => {
-      const text = event.document.getText();
-      const parser = new DOMParser({
-        errorHandler: {
-          warning: (msg) => console.warn("XML Warning:", msg),
-          error: (msg) => {
-            throw new Error("Invalid XML: " + msg);
-          },
-          fatalError: (msg) => {
-            throw new Error("Invalid XML: " + msg);
-          },
-        },
-      });
+      const doc = event.document;
 
-      try {
-        parser.parseFromString(text, "text/xml");
-      } catch (err: any) {
-        ToastHelper.ShowError(err.message);
+      if (doc.uri.toString() === document.uri.toString()) {
+        const fullRange = new vscode.Range(doc.positionAt(0), doc.positionAt(doc.getText().length));
+        const edit = new vscode.WorkspaceEdit();
+        const sortedText = XmlHelper.SortFile(doc.getText());
+
+        edit.replace(doc.uri, fullRange, sortedText);
+        await vscode.workspace.applyEdit(edit);
       }
     });
 
