@@ -2,6 +2,12 @@
 
 All important changes to the project are documented in this changelog.  
 
+## 1.1.2 - 03.01.2026
+
+### Changed
+- reduced extension size
+
+
 ## 1.1.1 - 02.01.2026
 
 ### Added
