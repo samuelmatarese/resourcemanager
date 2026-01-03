@@ -9,26 +9,28 @@ This resource manager was created as a personal learning project to explore how 
 
 You can easily create new entries using the button in the toolbar. Entry names and values can be edited directly in the table. Additionally, you can add comments to describe each resource, if needed.
 
-![Default](https://github.com/samuelmatarese/resourcemanager/blob/master/readmeAssets/default.png)
+![Default](https://raw.githubusercontent.com/samuelmatarese/resourcemanager/master/readmeAssets/default.png)
 
 **Generate a Designer File**
 
 Whenever you save your changes, a .Designer.cs file is automatically generated in the same directory as your .resx file. This file makes it easier to access your resources in .NET projects.
 
-![Designer file](https://github.com/samuelmatarese/resourcemanager/blob/master/readmeAssets/designer.png)
+![Designer file](https://raw.githubusercontent.com/samuelmatarese/resourcemanager/master/readmeAssets/designer.png)
 
 
 **Search Your Resources**
 
 The toolbar also includes a search bar, allowing you to quickly find specific entries. This is especially useful when working with large .resx files containing many resources.
 
-![Searchbar](https://github.com/samuelmatarese/resourcemanager/blob/master/readmeAssets/filter.png)
+![Searchbar](https://raw.githubusercontent.com/samuelmatarese/resourcemanager/master/readmeAssets/filter.png)
+
 
 **Change to XML view**
 
 You can change the view to show the plain xml file and also apply changes.
 
-![Plain view](https://github.com/samuelmatarese/resourcemanager/blob/master/readmeAssets/plain-view.png)
+![Plain view](https://raw.githubusercontent.com/samuelmatarese/resourcemanager/master/readmeAssets/plain-view.png)
+
 
 **Use Shortcuts for efficiency**
 
@@ -37,7 +39,7 @@ The following Shortcuts currently exist:
 Add Entry => Ctrl + Space <br>
 Delete Entry => Ctrl + d <br>
 Move between Entries => Ctrl + MouseUp/MouseDown <br>
-Focus Searchbar => Ctrl + f
+Focus Searchbar => Ctrl + f <br>
 Change between views => Ctrl + Enter
 
 
