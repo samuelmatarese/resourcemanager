@@ -21,10 +21,17 @@ export class ReloadHelper {
       let rows = xmlDoc.getElementsByTagName("data");
 
       for (let i = 0; i < rows.length; i++) {
-        const id = rows[i].getAttribute("id");
-        const name = rows[i].getAttribute("name") ?? "";
-        const value = rows[i].getElementsByTagName("value")[0]?.textContent ?? "";
-        const comment = rows[i].getElementsByTagName("comment")[0]?.textContent ?? "";
+        const currentRow = rows[i];
+        const previousRow = rows[i > 0 ? i - 1 : i];
+        const nextRow = rows[i < rows.length - 1 ? i + 1 : i];
+
+        const id = currentRow.getAttribute("id");
+        const previousRowId = previousRow.getAttribute("id") ?? "";
+        const nextRowId = nextRow.getAttribute("id") ?? "";
+
+        const name = currentRow.getAttribute("name") ?? "";
+        const value = currentRow.getElementsByTagName("value")[0]?.textContent ?? "";
+        const comment = currentRow.getElementsByTagName("comment")[0]?.textContent ?? "";
         const rowElement = document.createElement("tr");
 
         if (id === null) {
@@ -34,9 +41,9 @@ export class ReloadHelper {
 
         rowElement.id = id;
         rowElement.className = "table-row";
-        rowElement.appendChild(CreateEditableCell(id, rows[i > 0 ? i - 1 : i].id, rows[i < rows.length - 1 ? i + 1 : i].id, name, CellType.Name));
-        rowElement.appendChild(CreateEditableCell(id, rows[i > 0 ? i - 1 : i].id, rows[i < rows.length - 1 ? i + 1 : i].id, value, CellType.Value));
-        rowElement.appendChild(CreateEditableCell(id, rows[i > 0 ? i - 1 : i].id, rows[i < rows.length - 1 ? i + 1 : i].id, comment, CellType.Comment));
+        rowElement.appendChild(CreateEditableCell(id, previousRowId, nextRowId, name, CellType.Name));
+        rowElement.appendChild(CreateEditableCell(id, previousRowId, nextRowId, value, CellType.Value));
+        rowElement.appendChild(CreateEditableCell(id, previousRowId, nextRowId, comment, CellType.Comment));
         rowElement.appendChild(CreateDeleteButton(id));
         resourceTable?.appendChild(rowElement);
       }

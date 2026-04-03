@@ -1,4 +1,4 @@
-import { XMLSerializer, DOMParser } from "@xmldom/xmldom";
+import { XMLSerializer, DOMParser, MIME_TYPE, Document, LiveNodeList, Element } from "@xmldom/xmldom";
 import type { TextDocument } from "vscode";
 import { UpdateEntryEventArgs } from "../../../shared/eventArgs/entry/updateEntryEventArgs";
 import { CellType } from "../../../shared/eventArgs/entry/cellType";
@@ -7,7 +7,7 @@ import { AccessibilityTypeMapper } from "../../../shared/eventArgs/accessibility
 import { ToastHelper } from "../../../shared/helpers/toastHelper";
 
 export class XmlHelper {
-  public static findEntryById(id: string, entries: HTMLCollectionOf<HTMLDataElement>): HTMLDataElement {
+  public static findEntryById(id: string, entries: LiveNodeList<Element>): Element {
     for (let i = 0; i < entries.length; i++) {
       if (entries[i].getAttribute("id") === id) {
         return entries[i];
@@ -136,13 +136,13 @@ export class XmlHelper {
   public static createAccessability(document: string, type: AccessibilityType): string {
     var parser = new DOMParser();
 
-    const xmlDoc = parser.parseFromString(document);
+    const xmlDoc = parser.parseFromString(document, MIME_TYPE.XML_TEXT);
     const nodes = xmlDoc.getElementsByTagName("accessability");
 
     if (nodes.length === 0 || !nodes[0].textContent) {
       let node = xmlDoc.createElement("accessability");
       node.textContent = AccessibilityTypeMapper.MapToText(type);
-      const root = xmlDoc.documentElement;
+      const root = xmlDoc.documentElement!;
       root.insertBefore(node, root.firstChild);
     } else {
       nodes[0].textContent = AccessibilityTypeMapper.MapToText(type);
@@ -154,19 +154,11 @@ export class XmlHelper {
 
   public static SortFile(document: string): string {
     const parser = new DOMParser({
-      errorHandler: {
-        warning: (msg) => console.warn("XML Warning:", msg),
-        error: (msg) => {
-          throw new Error("Invalid XML: " + msg);
-        },
-        fatalError: (msg) => {
-          throw new Error("Invalid XML: " + msg);
-        },
-      },
+      onError: (msg : string) => {throw new Error("Invalid XML: " + msg)}
     });
 
     try {
-      const xmlDoc = parser.parseFromString(document);
+      const xmlDoc = parser.parseFromString(document, MIME_TYPE.XML_TEXT);
       const accessibility = this.GetAccessibility(xmlDoc) ?? undefined;
       let entries = Array.from(xmlDoc.getElementsByTagName("data"));
       let sortedText = this.GetDefaultContent(false, accessibility);
@@ -200,12 +192,12 @@ export class XmlHelper {
     return `<?xml version="1.0" encoding="utf-8"?>\n<root>\n\t<accessability>${AccessibilityTypeMapper.MapToText(accessibility)}</accessability>\n${appendRootEnd ? "</root>" : ""}`;
   }
 
-  private static getDocumentAsXml(document: TextDocument): XMLDocument {
+  private static getDocumentAsXml(document: TextDocument): Document {
     var parser = new DOMParser();
-    return parser.parseFromString(document.getText());
+    return parser.parseFromString(document.getText(), MIME_TYPE.XML_TEXT);
   }
 
-  private static GetAccessibility(xmlDoc: XMLDocument): AccessibilityType | null {
+  private static GetAccessibility(xmlDoc: Document): AccessibilityType | null {
     const nodes = xmlDoc.getElementsByTagName("accessability");
 
     if (nodes.length === 0 || !nodes[0].textContent) {
