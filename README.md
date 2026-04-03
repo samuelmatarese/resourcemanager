@@ -1,5 +1,9 @@
 # Resource Manager
 
+![Downloads](https://img.shields.io/visual-studio-marketplace/d/SamuelMatarese.resxmanager)
+![Installs](https://img.shields.io/visual-studio-marketplace/i/SamuelMatarese.resxmanager)
+![Rating](https://img.shields.io/visual-studio-marketplace/r/SamuelMatarese.resxmanager)
+
 This resource manager was created as a personal learning project to explore how to build VS Code extensions. Please note that this extension is still under development, and there is no guarantee that it will work correctly with your .resx files.
 
 
